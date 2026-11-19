@@ -412,7 +412,7 @@ select.sel{width:100%;height:42px;border:2px solid var(--navy);border-radius:10p
 #app.mobP.soyuz #exmsg,#app.mobP.space #exmsg{top:238px}
 #app.mobL.soyuz #exmsg{left:calc(166px + 22vw);max-width:calc(54vw - 176px)}
 #qrm .qrhow{margin-top:8px;font-size:13px;line-height:1.55}#qrm .qrhow summary{cursor:pointer}
-#qrm #qrlogin{margin:6px 0;font-size:14px}
+
 #app.mobP #symini{top:118px}
 /* 조작 버튼은 끌리거나(드래그) 글자 선택·길게 누름 메뉴가 뜨지 않게 */
 #exctl,#exctl *,#exbtns,#exbtns *,#exact,#exff,#exDown,.cardpeek,.cardpeek *,#exhud,#exhud *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none;-webkit-tap-highlight-color:transparent}
@@ -1337,7 +1337,7 @@ function camera(){
 }
 function proj(x,y,z){
   var m=VP,cx=m[0]*x+m[4]*y+m[8]*z+m[12],cy=m[1]*x+m[5]*y+m[9]*z+m[13],cw=m[3]*x+m[7]*y+m[11]*z+m[15];
-  if(cw<=0.5)return null;return {x:(cx/cw*0.5+0.5)*cssW,y:(1-(cy/cw*0.5+0.5))*cssH,w:cw};
+  if(cw<=((typeof SP!=='undefined'&&SP.on)?0.004:0.5))return null;   /* 우주 화면은 거리가 아주 짧아요 */return {x:(cx/cw*0.5+0.5)*cssW,y:(1-(cy/cw*0.5+0.5))*cssH,w:cw};
 }
 
 /* ===== 그리기 ===== */
@@ -3772,7 +3772,7 @@ function spStep(dt){
     }
     if(any&&SP.ride==null){var ty=Math.atan2(a[2],a[0]),dy=ty-SP.yaw;while(dy>Math.PI)dy-=2*Math.PI;while(dy<-Math.PI)dy+=2*Math.PI;if(Math.hypot(a[0],a[2])>0.1)SP.yaw+=dy*Math.min(1,dt*3);}
   }
-  E.anim+=dt*2;
+  E.anim+=dt*2;if(typeof mpSend==='function')mpSend(dt);
   SP.hudT-=dt;if(SP.hudT<=0){SP.hudT=0.15;spCard(false);}
   if(SP.lab)spLab();
 }
@@ -3832,6 +3832,7 @@ function drawSpace(tm){
     B(-0.08,0.18,0,0.08,0.24,0.2,[0.95,0.95,0.97]);B(0,0.40,0,0.16,0.16,0.16,[0.85,0.9,1.0]);
     if(SP.thr)B(-0.15,0.2,0,0.06,0.06,0.06,[0.9,0.95,1.0]);}
   if(SP.mode!=='in')spObjDraw(L,tm);
+  if(typeof mpDrawSpace==='function')mpDrawSpace(L,tm);
   var n=Math.min(L.p.length/3,EXV);
   gl.bindBuffer(gl.ARRAY_BUFFER,exM.p);gl.bufferSubData(gl.ARRAY_BUFFER,0,new Float32Array(L.p.slice(0,n*3)));
   gl.bindBuffer(gl.ARRAY_BUFFER,exM.n);gl.bufferSubData(gl.ARRAY_BUFFER,0,new Float32Array(L.n.slice(0,n*3)));
@@ -4296,7 +4297,7 @@ function syText(R){
     +'<small>🧸 천장에 매단 인형을 보세요: 엔진·공기·낙하산이 캡슐을 밀 때만 실이 팽팽해지고, 엔진을 끄고 궤도를 돌 땐 둥둥 떠요(자유낙하 = 무중력).<br>① 궤도 이탈 연소로 속도를 약 '+SYP.dv+' m/s 줄이면 지구 쪽으로 떨어지는 타원 궤도가 돼요. ② 대기권에서 엄청난 운동에너지가 공기를 압축·가열해 <b>열</b>이 돼요(방열판이 막아 줘요). ③ 낙하산으로 초속 약 7 m까지 줄이고, ④ 땅 0.8 m 위에서 역추진 엔진을 켜 살짝 내려앉아요.<br>※ 정거장 높이·소유즈 질량 등은 학습용 가정값이에요. 실제 소유즈는 약 400 km 높이의 국제우주정거장에서 돌아오고, 궤도 이탈 연소는 약 128 m/s예요.</small>';
 }
 
-/* ===== 같이 놀기 (Claude 실시간 방: 로그인·초대된 친구끼리) =====
+/* ===== 같이 놀기 (Claude 실시간 방) =====
    위치·캐릭터·이름만 주고받아요. 방에 연결이 안 되면 혼자 하기로 그대로 동작해요. */
 var MP={room:null,cr:null,mode:'',code:'',peers:{},nick:'',t:0,n:0,near:[],lt:0,idx:0};
 function mpClean(s){return String(s==null?'':s).replace(/[\u0000-\u001f<>&"'`​-‏‪-‮⁠﻿]/g,'').trim().slice(0,8);}
@@ -4320,7 +4321,7 @@ function mpListen(r){
 }
 function mpPick(){                    /* 방 코드가 있으면 코드 방, 없으면 Claude 방 */
   if(MP.inClaude&&!MP.crDone)return;
-  /* Claude 사이트 안: Claude 실시간 방(로그인한 초대 계정끼리 바로 만나요). 밖(웹 주소): 방 코드 중계 */
+  /* Claude 사이트 안: Claude 실시간 방. 밖(웹 주소): 방 코드 중계 */
   var want=MP.inClaude?(MP.cr?'claude':''):'relay';
   if(want===MP.mode&&(want!=='relay'||RL.code===MP.code))return;
   MP.mode=want;MP.peers={};MP.n=0;
@@ -4398,6 +4399,7 @@ function mpSync(list){
     m.ts=s;m.to=o;m.ty=y;m.th=isFinite(+q.h)?+q.h:0;
     m.c=clamp(Math.floor(+q.c)||0,0,CH.length-1);m.nm=mpClean(q.n)||'친구';
     m.pose=q.p===1?'sit':(q.p===2?'ski':null);m.av=clamp(+q.a||1,0.3,1.2);m.hide=q.x===1;
+    m.z=q.z===1;if(m.z&&Array.isArray(q.q)&&q.q.length===3&&q.q.every(isFinite)){m.q=q.q.map(Number);if(!m.cq)m.cq=m.q.slice();m.md=+q.m||0;m.w=+q.w||0;m.k=(Array.isArray(q.k)&&q.k.length===3&&q.k.every(isFinite))?q.k.map(Number):null;}else m.z=false;
     seen[p.peer]=1;n++;
   }
   for(var k in MP.peers)if(!seen[k])delete MP.peers[k];
@@ -4406,7 +4408,7 @@ function mpSync(list){
 function mpUi(){
   var b=$('#exPeers');if(!b)return;
   b.hidden=!EX.on||!(MP.room||MP.inClaude);
-  if(MP.inClaude&&!MP.room){b.textContent=MP.crDone?((typeof MOB!=='undefined'&&MOB.on)?'🔑 같이 놀기':'🔑 로그인하면 같이 놀기'):'👥 연결 중…';return;}
+  if(MP.inClaude&&!MP.room){b.textContent=MP.crDone?((typeof MOB!=='undefined'&&MOB.on)?'👤 혼자':'👤 혼자 하기 중'):'👥 연결 중…';return;}
   var st=MP.mode==='relay'?(RL.ok?' · 연결됨 ✅':(RL.blocked?' · ⚠️ 외부 연결 막힘 ('+(location.protocol==='file:'?'파일':location.hostname)+')':' · 연결 중…')):'';
   b.textContent=(typeof MOB!=='undefined'&&MOB.on)?'👥 '+(MP.n+1)+'명'+(MP.mode==='relay'&&!RL.ok?(RL.blocked?' ⚠️':' …'):''):'👥 '+(MP.n+1)+'명 접속'+st;
 }
@@ -4414,7 +4416,9 @@ function mpSend(dt){
   if(!MP.room)return;MP.t-=dt;if(MP.t>0)return;MP.t=MP.mode==='relay'?0.2:0.12;
   var E=EX;
   MP.room.presence({on:1,n:mpName(),c:E.chr||0,s:Math.round(E.s*1e4)/1e4,o:Math.round(E.off*1e4)/1e4,y:Math.round(E.y*10)/10,
-    h:Math.round(E.hdg*100)/100,p:E.pose==='sit'?1:(E.pose==='ski'?2:0),a:Math.round((E.avs||1)*100)/100,x:E.hide?1:0}).catch(function(){});
+    h:Math.round(E.hdg*100)/100,p:E.pose==='sit'?1:(E.pose==='ski'?2:0),a:Math.round((E.avs||1)*100)/100,x:E.hide?1:0,
+    z:(typeof SP!=='undefined'&&SP.on)?1:0,q:(typeof SP!=='undefined'&&SP.on)?SP.p.map(function(v){return Math.round(v*1e4)/1e4;}):0,m:(typeof SP!=='undefined'&&SP.on)?({dock:0,'in':1,eva:2})[SP.mode]:0,w:(typeof SP!=='undefined'&&SP.on)?Math.round(SP.yaw*100)/100:0,
+    k:(typeof SP!=='undefined'&&SP.on&&SP.mode==='dock'&&SP.cap)?SP.cap.p.map(function(v){return Math.round(v*1e4)/1e4;}):0}).catch(function(){});
 }
 function mpOff(){if(MP.room)MP.room.presence({on:0}).catch(function(){});MP.near=[];}
 function mpDraw(L,tm){
@@ -4439,13 +4443,35 @@ function mpDraw(L,tm){
 }
 function mpLabels(){
   for(var i=0;i<12;i++)(function(i){mkLab('mn',function(){
-    if(!EX.on||!MP.room)return null;var m=MP.near[i];if(!m||m.hide)return null;
+    if(!EX.on||!MP.room)return null;
+    if(typeof SP!=='undefined'&&SP.on){var sp=(MP.spNear||[])[i];if(!sp||(SP.mode==='in'&&sp.md===2)||(SP.mode==='eva'&&sp.md===1))return null;var P=sp.md===0&&sp.k?sp.k:sp.cq;return {p:[P[0],P[1]+0.035,P[2]],h:'<b>'+sp.nm+'</b>'+(sp.md===0?'<small>도킹 중</small>':(sp.md===1?'<small>정거장 안</small>':'<small>우주 유영 중</small>')),space:true};}
+    var m=MP.near[i];if(!m||m.hide)return null;
     return {p:pgW(m.cs,m.co,m.cy+34*m.av),h:'<b>'+m.nm+'</b>'};});})(i);
 }
 function mpGoNext(){
+  if(typeof SP!=='undefined'&&SP.on){var L=(MP.spNear||[]).filter(function(m){return m.md!==0;});
+    if(!L.length){exMsg('우주에 같이 있는 친구가 없어요');return;}var f=L[MP.idx%L.length];MP.idx++;
+    if(SP.mode==='dock'){exMsg(f.nm+'에게 가려면 먼저 도킹하거나 🧑‍🚀 바로 우주 유영을 눌러요');return;}
+    SP.ride=null;SP.goto=null;SP.mode=f.md===1?'in':'eva';SP.p=[f.cq[0]+(f.md===1?0.02:0.05),f.cq[1],f.cq[2]];SP.v=[0,0,0];SP.ce=null;exMsg(f.nm+' 옆으로 이동했어요');if(typeof spCard==='function')spCard(true);return;}
   if(!MP.near.length){exMsg('지금 같이 있는 친구가 없어요');return;}
   var m=MP.near[MP.idx%MP.near.length];MP.idx++;
   exPlace(m.cs-0.12,m.co);exMsg(m.nm+' 옆으로 이동했어요');
+}
+
+/* ===== 우주에서 친구 보기: 정거장 안·우주 유영·도킹 중인 친구를 우주 화면에 그려요 ===== */
+function mpDrawSpace(L,tm){
+  var dt=Math.min(0.1,Math.max(0,tm-(MP.slt||tm)));MP.slt=tm;var arr=[],k;
+  for(k in MP.peers){var m=MP.peers[k];if(!m.z||!m.q)continue;
+    var f=Math.min(1,dt*8);for(var j=0;j<3;j++)m.cq[j]+=(m.q[j]-m.cq[j])*f;
+    m.sd=Math.hypot(m.cq[0]-SP.p[0],m.cq[1]-SP.p[1],m.cq[2]-SP.p[2]);arr.push(m);}
+  arr.sort(function(a,b){return a.sd-b.sd;});MP.spNear=arr;
+  for(var i=0;i<arr.length&&i<30;i++){var p=arr[i];
+    if(p.md===0){if(p.k)spCapsule(L,p.k);continue;}
+    if(SP.mode==='in'&&p.md===2)continue;            /* 정거장 안에선 벽 밖 친구는 안 보여요 */
+    if(SP.mode==='eva'&&p.md===1)continue;
+    var B=pgMkB(L,[p.cq[0],p.cq[1]-0.02,p.cq[2]],p.w,0.12+0.05*Math.sin(tm*0.8+i),0.07,0),c=CH[p.c]||CH[0];
+    exAvatar(B,c,Math.sin(tm*1.3+i)*0.05,false,tm,null);
+    B(-0.08,0.18,0,0.08,0.24,0.2,[0.95,0.95,0.97]);B(0,0.40,0,0.16,0.16,0.16,[0.85,0.9,1.0]);}
 }
 
 /* ===== QR 생성기 (외부 라이브러리 없음, 바이트 모드, 오류정정 L, 버전 1~10) ===== */
@@ -4661,9 +4687,10 @@ function setupLabels(){
   mkLab('sp',function(){var st=cur.stNow;if(!st||!st.on)return null;return {p:sPos(st.s,0,Math.max(2,st.h/UV*3)+1),h:'<b>'+fN(st.v*3.6,0)+' km/h</b>'};});
 }
 function updateLabels(){
-  if(!use3d||(typeof SP!=='undefined'&&SP.on)||(typeof syCustom==='function'&&syCustom())){LABS.forEach(function(L){L.el.style.display='none';});return;}
+  if(!use3d||(typeof syCustom==='function'&&syCustom())){LABS.forEach(function(L){L.el.style.display='none';});return;}
+  var inSp=typeof SP!=='undefined'&&SP.on;
   LABS.forEach(function(L){
-    var d=L.fn();if(!d){L.el.style.display='none';return;}
+    var d=L.fn();if(!d||(inSp&&!d.space)){L.el.style.display='none';return;}
     var dist=Math.hypot(d.p[0]-camPos[0],d.p[1]-camPos[1],d.p[2]-camPos[2]);
     var q=proj(d.p[0],d.p[1],d.p[2]);
     if(!q||q.x<-40||q.x>cssW+40||q.y<10||q.y>cssH-(d.far?70:10)||q.y>cssH+10||(d.far&&dist<14)||((camMode==='fol'||camMode==='fp')&&dist>230&&L.el.className.indexOf('sp')<0&&L.el.className.indexOf('hub')<0)){L.el.style.display='none';return;}
@@ -4954,7 +4981,7 @@ mpInit();
 lakeReset();
 setupLabels();syncCamBtns();renderPanel();
 (function(){var T=camTarget({on:false,has:false,s:0});camS.tx=T.x;camS.ty=T.y;camS.tz=T.z;camS.dist=camG.fol.dist;camS.yaw=camG.fol.yaw;camS.pitch=camG.fol.pitch;camS.phi=pathHeading(T.s);})();
-if(DBG)window.__dbg={PG:PG,pgStart:pgStart,pgEnd:pgEnd,pgSim:pgSim,pgBuild:pgBuild,CH:CH,visH:visH,UM:UM,UV:UV,vil:vil,exGround:exGround,NR:NR,R0:R0,exPlace:exPlace,PLT:PLT,plCalc:plCalc,exStep:exStep,EX:EX,MP:MP,RL:RL,f9Sim:f9Sim,F9:F9,pgSeg:pgSeg,pgLoopV:pgLoopV,pgLoopVs:pgLoopVs,pgCoT:pgCoT,pgText:pgText,pgFF:pgFF,SP:SP,spEnter:spEnter,spExit:spExit,spAct:spAct,SPX:SPX,syStart:syStart,syCustom:syCustom,SYV:SYV,drawSoyuz:drawSoyuz,spFF:spFF,syStep1:syStep1,SYP:SYP,syH:syH,pgPos:pgPos,pgCoDist:pgCoDist,pgAct:pgAct,RF:RF,pre:pre,LK:LK,updatePre:updatePre,S:S,cur:cur,pl:pl,doReset:doReset,startRun:startRun,camG:camG,frags:[],stateAt:stateAt,ui:ui,VIL:VIL};
+if(DBG)window.__dbg={PG:PG,pgStart:pgStart,pgEnd:pgEnd,pgSim:pgSim,pgBuild:pgBuild,CH:CH,visH:visH,UM:UM,UV:UV,vil:vil,exGround:exGround,NR:NR,R0:R0,exPlace:exPlace,PLT:PLT,plCalc:plCalc,exStep:exStep,EX:EX,MP:MP,RL:RL,f9Sim:f9Sim,F9:F9,pgSeg:pgSeg,pgLoopV:pgLoopV,pgLoopVs:pgLoopVs,pgCoT:pgCoT,pgText:pgText,pgFF:pgFF,SP:SP,spEnter:spEnter,spExit:spExit,spAct:spAct,SPX:SPX,syStart:syStart,syCustom:syCustom,mpSync:mpSync,mpGoNext:mpGoNext,SYV:SYV,drawSoyuz:drawSoyuz,spFF:spFF,syStep1:syStep1,SYP:SYP,syH:syH,pgPos:pgPos,pgCoDist:pgCoDist,pgAct:pgAct,RF:RF,pre:pre,LK:LK,updatePre:updatePre,S:S,cur:cur,pl:pl,doReset:doReset,startRun:startRun,camG:camG,frags:[],stateAt:stateAt,ui:ui,VIL:VIL};
 requestAnimationFrame(loop);
 
 /* ===== QR 창 / 전체화면 ===== */
@@ -4973,17 +5000,16 @@ function paintQR(){
   var n=q.length,quiet=4,cell=Math.max(1,Math.floor(px/(n+quiet*2))),off=Math.floor((px-cell*n)/2);
   g.fillStyle='#111';
   for(var y=0;y<n;y++)for(var x=0;x<n;x++)if(q[y][x])g.fillRect(off+x*cell,off+y*cell,cell,cell);
-  note.textContent=!/^https?:\/\//.test(text)?'주소는 https:// 로 시작해야 폰에서 바로 열려요.':(/claude\.ai/.test(text)?'QR로 들어와서 Claude에 로그인하고 🧭 탐험하기를 누르면 바로 같은 곳에서 만나요':'QR로 들어온 친구는 모두 한 채널에서 바로 만나요');
+  note.textContent=!/^https?:\/\//.test(text)?'주소는 https:// 로 시작해야 폰에서 바로 열려요.':(/claude\.ai/.test(text)?'QR로 들어와서 🧭 탐험하기를 누르면 같은 곳에서 만나요 (Claude 계정 필요)':'QR로 들어온 친구는 모두 한 채널에서 바로 만나요');
 }
 function openQR(){
   $('#qrm').hidden=false;$('#qrurl').value=qrDefault();
   var inC=typeof MP!=='undefined'&&MP.inClaude,ok=qrHosted()||inC,w=$('#qrwarn');w.hidden=ok&&!(inC&&!MP.cr);$('#qrc').hidden=!ok;$('#qrurl').hidden=!ok;$('#qrnote').hidden=!ok;
   $('#qrm .qrrm').hidden=true;
   if(inC){$('#qrurl').value=SHARE_URL||location.href.split('#')[0];
-    w.hidden=false;w.innerHTML=(MP.cr?'<b>✅ 이 QR(Claude 링크)로 들어온 친구들은 모두 한 채널에서 만나요.</b><br>들어오는 친구도 Claude 로그인이 필요해요 → <b>Google 계정으로 1초 로그인</b>하면 돼요.':'<b>⚠️ 이 기기는 Claude에 로그인되어 있지 않아 같이 놀기가 꺼져 있어요.</b><br><button type="button" class="btn primary" id="qrlogin">🔑 Google 계정으로 Claude 로그인</button><br><small>로그인한 뒤 이 페이지를 다시 열면 바로 같이 놀 수 있어요.</small>')+'<details class="qrhow"><summary><b>🔓 Claude 가입 없이 QR만으로 같이 놀려면 (선생님이 한 번만)</b></summary>① 아래 <b>index.html</b> 파일(다운로드 받은 것)이 든 폴더를 <b>app.netlify.com/drop</b> 에 끌어다 놓아요<br>② <b>Google로 로그인</b>해서 사이트를 저장(claim)해요 — 로그인하지 않으면 1시간 뒤 지워져요<br>③ 생긴 주소(…netlify.app)를 컴퓨터에서 열고 <b>📱 QR로 친구 부르기</b>를 누르면, 그 QR로 들어온 학생들은 <b>가입·로그인 없이</b> 모두 한 채널에서 만나요</details>';
-    var lb=$('#qrlogin');if(lb)lb.addEventListener('click',function(){try{window.open('https://claude.ai/login','_blank','noopener');}catch(e){}});}
-  if(!ok)w.innerHTML='<b>⚠️ 지금 이 화면('+(location.protocol==='file:'?'내 컴퓨터에 받은 파일':location.hostname)+')은 휴대폰이 들어올 주소가 없어요.</b><br><details class="qrhow" open><summary><b>🔓 Claude 가입 없이 QR만으로 같이 놀려면 (선생님이 한 번만)</b></summary>① 아래 <b>index.html</b> 파일(다운로드 받은 것)이 든 폴더를 <b>app.netlify.com/drop</b> 에 끌어다 놓아요<br>② <b>Google로 로그인</b>해서 사이트를 저장(claim)해요 — 로그인하지 않으면 1시간 뒤 지워져요<br>③ 생긴 주소(…netlify.app)를 컴퓨터에서 열고 <b>📱 QR로 친구 부르기</b>를 누르면, 그 QR로 들어온 학생들은 <b>가입·로그인 없이</b> 모두 한 채널에서 만나요</details>';
-  if(qrHosted()){w.hidden=false;w.innerHTML='<b>✅ 이 QR로 들어온 친구들은 가입·로그인 없이 모두 한 채널에서 만나요.</b>';}
+    w.hidden=false;w.innerHTML=MP.cr?'<b>✅ 이 QR로 들어온 친구들은 모두 한 채널에서 만나요.</b><br><small>이 주소에서는 Claude 계정이 있는 사람끼리 만나요. 계정 없이 하려면 게임 파일을 GitHub Pages 같은 웹 주소에 올려서 그 주소의 QR을 쓰세요.</small>':'<b>이 기기에서는 같이 놀기가 꺼져 있어요.</b><br><small>이 주소에서는 Claude 계정이 있어야 같이 놀 수 있어요. 계정 없이 하려면 게임 파일을 GitHub Pages 같은 웹 주소에 올려서 그 주소의 QR을 쓰세요.</small>';}
+  if(!ok)w.innerHTML='<b>이 화면('+(location.protocol==='file:'?'내 컴퓨터의 파일':location.hostname)+')에는 휴대폰이 들어올 주소가 없어요.</b><br><small>게임 파일(index.html)을 GitHub Pages 같은 웹 주소에 올리고, 그 주소에서 이 버튼을 다시 누르세요.</small>';
+  if(qrHosted()){w.hidden=false;w.innerHTML='<b>✅ 이 QR로 들어온 친구들은 모두 한 채널에서 바로 만나요.</b>';}
   paintQR();$('#qrclose').focus();
 }
 $('#exQR').addEventListener('click',openQR);
