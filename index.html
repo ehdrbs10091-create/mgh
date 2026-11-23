@@ -423,6 +423,15 @@ html,body{overscroll-behavior:none}
 .lab.lift small{display:none}.lab.lift{opacity:.9}
 #app.heli.mob #exDown{display:block;right:max(14px,env(safe-area-inset-right));bottom:118px}#app.mobL.heli #exDown{right:104px;bottom:20px}
 .exevo{position:relative;margin:4px 0 2px;padding:3px 8px;border-radius:8px;background:#fff4c8;font-size:12px;font-weight:700;overflow:hidden}.exevo small{font-weight:500}.exevo i{position:absolute;left:0;bottom:0;height:3px;background:#f5a623}
+#skres{position:absolute;left:50%;top:70px;transform:translateX(-50%);z-index:40;width:min(440px,calc(100% - 24px));background:#fffdf5;border:3px solid #1d3557;border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.45;box-shadow:0 4px 14px rgba(0,0,0,.25)}#skres .skr1{font-size:18px;margin:4px 0}#skres .skr2{background:#eef6ff;border-radius:8px;padding:6px 8px;margin:4px 0}#skres .skr3{margin-top:4px}#skres button{margin-top:6px;padding:4px 14px;border-radius:999px;border:2px solid #1d3557;background:#ffd34d;font-weight:700}
+.dcnav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0 4px}.dcnav button{flex:1;min-height:40px;border-radius:999px;border:2px solid #1d3557;background:#ffd34d;font-weight:800;font-size:15px;touch-action:manipulation}.dcnav button[disabled]{opacity:.35}.dcnav span{font-weight:700;min-width:44px;text-align:center}
+#app.mobL.heli #exDown{right:auto;left:150px;bottom:22px}
+.lkph{display:flex;align-items:center;gap:8px;margin:6px 0;padding:6px 10px;border:3px solid #222;border-radius:16px;background:#fff;max-width:260px}.lkph .lkimg{font-size:22px}.lkph .lkh{font-size:24px;transition:transform .2s}.lkph .lkh.on{transform:scale(1.15)}.lkph b{font-size:15px}.lkph small{color:#555;font-size:11px}.lkpk{font:12px/1.4 ui-monospace,Menlo,monospace;background:#1d2433;color:#9ef0a8;border-radius:8px;padding:6px 8px;margin:4px 0;word-break:break-all}.lkpk.lkenc{color:#ffb4c8}.lkmv{font-weight:800;color:#c2185b;margin:2px 0}
+.lkrt{display:flex;align-items:center;gap:2px;margin:4px 0;font-size:16px;flex-wrap:wrap}.lkrt span{opacity:.35;padding:1px 3px;border-radius:6px}.lkrt span.on{opacity:1;background:#ffd34d;transform:scale(1.2)}.lkrt i{opacity:.4;font-style:normal}
+.lkrt.back span.on{background:#7be3a0}.lkpk.lkok{background:#0f3d26;color:#a9f7c6}
+.lkc .lkt{display:block;font-size:15px;margin-bottom:4px}.lkc .lkb{margin:6px 0;font-size:14.5px;line-height:1.65}.lkc .lkrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.lkc .lkrow .lkph{margin:4px 0}.lkc .lktm{font-size:12px;line-height:1.3;background:#fff3c4;border-radius:10px;padding:4px 8px}.lkc .lktm b{font-size:15px}.lkc .lkft{color:#777}.lkc .lkpk{font-family:inherit;font-size:13px}
+#pgcard:has(.lkc) .plnote{display:none}
+#app.mob #pgcard:has(.lkc).open{max-height:min(46vh,calc(100% - 210px))}#app.mob #pgcard:has(.lkc) .lkt{display:none}#app.mob .lkc .lkft{display:none}#app.mob .lkc .lkb{font-size:15px;line-height:1.6;margin:4px 0}#app.mob .lkc .lkrt{font-size:18px;gap:0;justify-content:space-between;flex-wrap:nowrap}#app.mob .lkc .lkrt i{font-size:10px}#app.mob .lkc .dcnav button{font-size:15px;min-height:44px}#app.mob .lkc .lkph{padding:3px 8px}#app.mob .lkc .lkph .lkh{font-size:22px}
 </style>
 
 <div id="app">
@@ -1808,6 +1817,7 @@ function exStep1(dt){
       if(E.vy<-6){E.land={v:vv,ke:0.5*E.mass*vv*vv,drop:E.apex-gl2,lost:E.lost};E.landT=5;}
       E.y=gl2;E.vy=0;E.air=false;E.vh=[0,0];E.jet=false;
       if(E.skiFrom){var dd=Math.hypot((E.s-E.skiFrom.s)*UM,(E.off-E.skiFrom.o)*UM);exMsg(E.skiFrom.n+' 비행 거리 '+fN(dd,0)+' m!');
+        if(E.skiFrom.n==='스키점프'&&typeof pgSkiResult==='function')pgSkiResult(E.skiFrom,dd,vv);
         if(E.skiFrom.n==='스키점프'){PG.best=Math.max(PG.best,dd);PG.sum.ski=(PG.sum.ski||'')+' · 방금 기록 <b>'+fN(dd,0)+' m</b>';}E.skiFrom=null;}
       E.free=false;E.fts=1;E.pose=null;E.avs=1;E.avp=0;
     }
@@ -1951,7 +1961,7 @@ function exHud(dt){
   $('#exhud').innerHTML=h2;
 }
 function exMenu(){
-  var h='<div class="exmh"><b>탐험 설정 <small style="font-weight:600;color:#888">버전 v75</small></b><button type="button" id="exMClose" aria-label="닫기">✕</button></div>';
+  var h='<div class="exmh"><b>탐험 설정 <small style="font-weight:600;color:#888">버전 v83</small></b><button type="button" id="exMClose" aria-label="닫기">✕</button></div>';
   h+='<div class="exquick mobonly"><button type="button" data-q="exQR">📱 QR로 친구 부르기</button><button type="button" data-q="exHudB">📊 에너지창 켜기/끄기</button><button type="button" data-q="exCardB">📖 설명창 켜기/끄기</button><button type="button" data-q="exExit">🧪 실험실로 나가기</button></div>';
   h+='<label>내 몸무게 <b id="exMv">'+EX.mass+' kg</b><input id="exMass" type="range" min="20" max="100" step="1" value="'+EX.mass+'"></label>';
   h+='<label>기준 높이(위치에너지 0)<select id="exRef"><option value="low">지도에서 가장 낮은 곳 ('+fN(elev(LTOT),0)+' m)</option><option value="ras">라수와가디 마을 ('+fN(elev(vil('ras').s),0)+' m)</option><option value="sea">해수면 (0 m)</option><option value="me">내가 고른 곳</option></select></label>';
@@ -2372,13 +2382,13 @@ function pgMakeSlide(){
   pgMonoFit(pts,raw,1.4);
   PG.SL.pts=pts;PG.SL.brk=N+1;PG.SL.brkF=20;pgFin(PG.SL);
 }
-function pgMakeSki(){
-  var S0=PG.S0,sL=S0+6.0,oB=15.5,oA=oB+6.0,tan=Math.tan(PG.SK.aDeg*Math.PI/180),yB=exGround(sL,oB)+25,pts=[],i,N=30,minC=1e9;
+function pgMakeSki(ds){
+  var S0=PG.S0,sL=S0+6.0+(ds||0),oB=15.5,oA=oB+6.0,tan=Math.tan(PG.SK.aDeg*Math.PI/180),yB=exGround(sL,oB)+25,pts=[],i,N=30,minC=1e9;
   function build(yb){var P=[];for(i=0;i<=N;i++){var o=lerp(oA,oB,i/N);P.push({s:sL,o:o,y:yb+(o-oB)*UM*tan});}return P;}
   pts=build(yB);for(i=0;i<=N;i++)minC=Math.min(minC,pts[i].y-exGround(pts[i].s,pts[i].o));
   if(minC<6){yB+=6-minC;pts=build(yB);}
   pts.push({s:sL,o:oB-0.12,y:yB});pts.push({s:sL,o:oB-0.24,y:yB});pts.push({s:sL,o:oB-0.36,y:yB});
-  PG.SK.pts=pts;PG.SK.lipI=pts.length-1;pgFin(PG.SK);
+  return pgFin({pts:pts,lipI:pts.length-1,aDeg:PG.SK.aDeg});
 }
 function pgMakePiste(){
   var S0=PG.S0,sc=S0-4.0,o0=28.6,o1=7.4,N=220,NB=14,pts=[],raw=[],i;
@@ -2484,21 +2494,24 @@ function pgBuild(){
   var A0=pgW(P[0].s,P[0].o,P[0].y);addBox(L,A0[0]-0.05,A0[1]-0.04,A0[2],0.26,0.04,0.26,0,PGC.wood);
   pbox(L,pgW(P[0].s,P[0].o,exGround(P[0].s,P[0].o)-1),[A0[0]-0.05,A0[1]-0.04,A0[2]],0.05,0.05,PGC.steel);
   /* ── 초대형 스키점프 ── */
-  pgMakeSki();var K=PG.SK.pts;
+  /* 똑같은 스키점프 4개를 나란히(친구와 기록 비교) */
+  PG.SKS=[0,0.7,1.4,2.1].map(function(ds){return pgMakeSki(ds);});PG.SK=PG.SKS[0];
+  PG.SKS.forEach(function(SKj,jn){var K=SKj.pts;
   for(i=0;i<K.length-1;i++){
     var A1=pgW(K[i].s,K[i].o,K[i].y),B1=pgW(K[i+1].s,K[i+1].o,K[i+1].y);
     pbox(L,A1,B1,0.14,0.03,i%2?PGC.white:PGC.blue);
     [-1,1].forEach(function(q){pbox(L,[A1[0]+0.075*q,A1[1]+0.025,A1[2]],[B1[0]+0.075*q,B1[1]+0.025,B1[2]],0.012,0.035,PGC.dark);});
-    if(i%2===0&&i<PG.SK.lipI-2){var g2=exGround(K[i].s,K[i].o)-1,top=[A1[0],A1[1]-0.02,A1[2]];
+    if(i%2===0&&i<SKj.lipI-2){var g2=exGround(K[i].s,K[i].o)-1,top=[A1[0],A1[1]-0.02,A1[2]];
       [-1,1].forEach(function(q){pbox(L,pgW(K[i].s+0.05*q,K[i].o,g2),[top[0]+0.05*q*0.3,top[1],top[2]],0.04,0.04,PGC.steel);});
       if(i%4===0)pbox(L,pgW(K[i].s-0.05,K[i].o,g2+(K[i].y-g2)*0.5),pgW(K[i].s+0.05,K[i].o,g2+(K[i].y-g2)*0.5),0.02,0.02,PGC.steel);}
   }
   var KA=pgW(K[0].s,K[0].o,K[0].y);addBox(L,KA[0],KA[1]-0.05,KA[2]-0.04,0.34,0.05,0.30,0,PGC.wood);
   [-1,1].forEach(function(q){pbox(L,[KA[0]+0.15*q,KA[1],KA[2]-0.1],[KA[0]+0.15*q,KA[1]+0.22,KA[2]-0.1],0.025,0.025,PGC.red);});
   pbox(L,[KA[0]-0.15,KA[1]+0.22,KA[2]-0.1],[KA[0]+0.15,KA[1]+0.22,KA[2]-0.1],0.025,0.025,PGC.red);
-  var lip=K[PG.SK.lipI];
+  var lip=K[SKj.lipI];
   for(i=1;i<=16;i++){var oo=lip.o-i*(25/UM),gg=exGround(lip.s,oo)+0.4,col=(i===10)?PGC.red:(i%2?PGC.white:PGC.yel),wd=(i===10)?0.5:0.34;
     pbox(L,pgW(lip.s-wd/2,oo,gg),pgW(lip.s+wd/2,oo,gg),i===10?0.03:0.02,0.012,col);}
+  });
   pgBuildResort(L);
   pgBuildCoaster(L);
   if(typeof pgBuildWater==='function'){pgBuildWater(L);pgBuildBungee(L);}
@@ -2510,7 +2523,10 @@ function pgBuild(){
     {k:'tramp',n:'🤸 거대 트램펄린 1',s:PG.TS[0].s,o:PG.TS[0].o,y:PG.TS[0].bed,r:T.R+0.25},{k:'tramp1',n:'🤸 트램펄린 2',s:PG.TS[1].s,o:PG.TS[1].o,y:PG.TS[1].bed,r:T.R+0.25},{k:'tramp2',n:'🤸 트램펄린 3',s:PG.TS[2].s,o:PG.TS[2].o,y:PG.TS[2].bed,r:T.R+0.25},{k:'tramp3',n:'🤸 트램펄린 4',s:PG.TS[3].s,o:PG.TS[3].o,y:PG.TS[3].bed,r:T.R+0.25},{k:'tramp4',n:'🤸 트램펄린 5',s:PG.TS[4].s,o:PG.TS[4].o,y:PG.TS[4].bed,r:T.R+0.25},
     {k:'swing',n:'🪢 거대 그네',s:SW.s,o:SW.o,y:exGround(SW.s,SW.o),r:0.62},
     {k:'slide',n:'🛝 초대형 미끄럼틀',s:P[0].s,o:P[0].o,y:exGround(P[0].s,P[0].o),r:0.6},
-    {k:'ski',n:'🎿 초대형 스키점프',s:K[0].s,o:K[0].o,y:exGround(K[0].s,K[0].o),r:0.6},
+    {k:'ski',n:'🎿 초대형 스키점프 1',s:PG.SKS[0].pts[0].s,o:PG.SKS[0].pts[0].o,y:exGround(PG.SKS[0].pts[0].s,PG.SKS[0].pts[0].o),r:0.3},
+    {k:'ski1',n:'🎿 스키점프 2',s:PG.SKS[1].pts[0].s,o:PG.SKS[1].pts[0].o,y:exGround(PG.SKS[1].pts[0].s,PG.SKS[1].pts[0].o),r:0.3},
+    {k:'ski2',n:'🎿 스키점프 3',s:PG.SKS[2].pts[0].s,o:PG.SKS[2].pts[0].o,y:exGround(PG.SKS[2].pts[0].s,PG.SKS[2].pts[0].o),r:0.3},
+    {k:'ski3',n:'🎿 스키점프 4',s:PG.SKS[3].pts[0].s,o:PG.SKS[3].pts[0].o,y:exGround(PG.SKS[3].pts[0].s,PG.SKS[3].pts[0].o),r:0.3},
     {k:'gup',n:'🚡 곤돌라 (올라가기)',s:gU[0].s,o:gU[0].o,y:exGround(gU[0].s,gU[0].o),r:0.6},
     {k:'gdn',n:'🚡 곤돌라 (내려가기)',s:gD[0].s,o:gD[0].o,y:exGround(gD[0].s,gD[0].o),r:0.6},
     {k:'piste',n:'⛷️ 스키 슬로프 출발',s:pi[0].s+0.35,o:pi[0].o,y:exGround(pi[0].s+0.35,pi[0].o),r:0.55},
@@ -2673,6 +2689,7 @@ function pgDress(E,k,av,pose){E.avs=av;E.avp=0;E.pose=pose;E.hide=false;}
 function pgStartCore(k){
   var E=EX,R,P,st;
   if(/^tramp\d?$/.test(k)&&PG.TS){PG.T=PG.TS[+(k.slice(5)||0)]||PG.TS[0];k='tramp';}
+  if(/^ski\d?$/.test(k)&&PG.SKS&&!E.ride){PG.SKi=+(k.slice(3)||0);PG.SK=PG.SKS[PG.SKi]||PG.SKS[0];k='ski';}
   if(E.ride||!PG.built)return;
   R=E.ride={k:k,t:0};E.air=true;E.free=false;E.jet=false;E.lost=0;E.land=null;E.skiFrom=null;E.holdT=0;E.keys.space=false;E.jumpEdge=false;E.vh=[0,0];E.vy=0;E.el=0;
   EX.dist=clamp(EX.dist,1.2,EX_TOUCH?3.2:2.0);
@@ -2725,7 +2742,7 @@ function pgEndCore(manual,force){
     var sg=S.sg,vh=[sg.dx/sg.L*S.v,sg.dz/sg.L*S.v];
     E.vh=[vh[0],vh[1]];E.vy=(-sg.dy/sg.L)*S.v+(k==='ski'&&!manual?3.0:0);
     E.free=(k==='ski'&&!manual);E.fts=E.free?(R.ts||1):1;E.air=true;E.ride=null;E.apex=E.y;
-    if(k==='ski'&&!manual){E.skiFrom={s:E.s,o:E.off,n:'스키점프'};PG.sum.ski='이륙 속도 <b>'+fN(S.v,1)+' m/s</b>('+fN(S.v*3.6,0)+' km/h) · 내려온 높이 '+fN(R.y0-R.yEnd,0)+' m · 마찰열 '+exE(S.heat);exMsg('이륙! 수평 속도는 일정하고 아래로는 중력으로 가속돼요');}
+    if(k==='ski'&&!manual){E.skiFrom={s:E.s,o:E.off,n:'스키점프',v:S.v,h:R.y0-R.yEnd,heat:S.heat,j:PG.SKi||0,y:E.y,t:performance.now()};PG.sum.ski='이륙 속도 <b>'+fN(S.v,1)+' m/s</b>('+fN(S.v*3.6,0)+' km/h) · 내려온 높이 '+fN(R.y0-R.yEnd,0)+' m · 마찰열 '+exE(S.heat);exMsg('이륙! 수평 속도는 일정하고 아래로는 중력으로 가속돼요');}
     else{pgDress(E,k,1,null);exMsg('멈췄어요');}
     return;
   }
@@ -2926,11 +2943,13 @@ function pgCard(){
   if(!E.ride)PG.st.forEach(function(s,i){var d=Math.hypot(s.s-E.s,s.o-E.off),rr=Math.max(s.r*2.5,1.6);if(d<rr&&d/rr<bd&&Math.abs(E.y-s.y)<300){bd=d/rr;best=i;}});   /* 멀리서도 타기 쉽게: 반경을 넓혔어요 */
   PG.near=best;
   var k=E.ride?E.ride.k:(best>=0?PG.st[best].k:null),el=$('#pgcard'),ab=$('#exact'),ff=$('#exff');
+  if(k&&!E.ride&&/^ski\d?$/.test(k)&&PG.SKS){PG.SKi=+(k.slice(3)||0);PG.SK=PG.SKS[PG.SKi]||PG.SKS[0];k='ski';}
   if(k&&!E.ride&&/^tramp\d$/.test(k)&&PG.TS){PG.T=PG.TS[+k.slice(5)]||PG.TS[0];k='tramp';}else if(k==='tramp'&&!E.ride&&PG.TS)PG.T=PG.TS[0];
   PG.eagleNear=null;
-  if(!k&&typeof p5EagleNear==='function'){var en=p5EagleNear();if(en){PG.eagleNear=en;el.hidden=false;$('#pgbody').innerHTML=p5EagleCard();$('#pgsl').style.display='none';ab.hidden=false;ab.textContent='🦅 독수리 타기 (E)';if(ff)ff.hidden=true;return;}}
+  if(!k&&typeof p5EagleNear==='function'){var en=p5EagleNear();if(en){PG.eagleNear=en;el.hidden=false;var pb2=$('#pgbody'),ph2=p5EagleCard();if(pb2.dataset.h!==ph2){pb2.innerHTML=ph2;pb2.dataset.h=ph2;}$('#pgsl').style.display='none';ab.hidden=false;ab.textContent='🦅 독수리 타기 (E)';if(ff)ff.hidden=true;return;}}
   if(!k){el.hidden=true;ab.hidden=true;if(ff)ff.hidden=true;return;}
-  el.hidden=false;$('#pgbody').innerHTML=pgText(k);
+  if(typeof MOB!=='undefined'&&MOB.on&&typeof mobCardSet==='function'){if(E.ride&&(E.ride.k==='dc'||E.ride.k==='like')){if(!el.dataset.dcopen){el.dataset.dcopen=1;mobCardSet(el,true);}}else if(el.dataset.dcopen)delete el.dataset.dcopen;}   /* 견학 중엔 설명 카드를 펼쳐 둬요 */
+  el.hidden=false;var pb=$('#pgbody'),ph=pgText(k);if(pb.dataset.h!==ph){pb.innerHTML=ph;pb.dataset.h=ph;}   /* 내용이 바뀔 때만 다시 그려요(버튼이 잘 눌리게) */
   var any=false;PGSL.forEach(function(s,i){var on=(k===s.k)||(s.k==='coaster'&&k.indexOf('coaster')===0);$('#pgl'+i).style.display=on?'':'none';if(on)any=true;});
   $('#pgsl').style.display=any?'':'none';
   ab.hidden=false;
@@ -2939,6 +2958,7 @@ function pgCard(){
   if(ff){ff.hidden=!E.ride;if(!ff.hidden)ff.textContent='⏩ 시간 '+(E.ride.ts||1)+'배속 (F)';}
 }
 function pgLabels(){
+  if(typeof likeLabels==='function')likeLabels();
   var i;if(typeof mpLabels==='function')mpLabels();
   for(i=0;i<90;i++)(function(i){mkLab('mn',function(){
     if(!EX.on||!PG.built)return null;var s=PG.st[i];if(!s||EX.ride)return null;
@@ -2954,6 +2974,22 @@ function pgSpots(){
   var S0=PG.S0,a=[{n:'🎡 체험 놀이터 광장',s:S0+0.2,o:4.8}];
   PG.st.forEach(function(s){a.push({n:s.n,s:s.s,o:s.o+(s.k==='slide'||s.k==='ski'||s.k==='piste'||s.k==='swing'||s.k==='gup'||s.k==='gdn'?0.15:0.0)});});
   return a;
+}
+
+/* ===== 스키점프 결과 설명 ===== */
+PG.skiRec=[0,0,0,0];
+function pgSkiResult(sf,dd,vland){
+  var m=EX.mass,h=sf.h,pe=m*EXG*h,ke=0.5*m*sf.v*sf.v,pct=pe>0?ke/pe*100:0,j=sf.j||0,best=PG.skiRec[j]<dd;if(best)PG.skiRec[j]=dd;
+  var ft=dd/Math.max(1,sf.v),drop=sf.y-EX.y,others=PG.skiRec.map(function(r,i){return '점프 '+(i+1)+': '+(r?fN(r,0)+' m':'—');}).join(' · ');
+  var h2='<b>🏁 스키점프 '+(j+1)+' 결과</b><div class="skr1">비행 거리 <b>'+fN(dd,0)+' m</b>'+(best?' 🎉 이 점프대 최고 기록!':'')+'</div>'
+   +'<div class="skr2">① 활주로에서 <b>'+fN(h,0)+' m</b> 내려오며 위치에너지 mgh = '+exE(pe)+'<br>'
+   +'② 그중 <b>'+fN(pct,0)+'%</b>가 운동에너지(이륙 속도 '+fN(sf.v,1)+' m/s = '+fN(sf.v*3.6,0)+' km/h)로, 나머지 '+fN(100-pct,0)+'%는 눈과의 마찰로 열이 됐어요<br>'
+   +'③ 공중에서 약 '+fN(ft,1)+'초 날며 '+fN(Math.max(0,drop),0)+' m 더 떨어져서, 착지 속도는 '+fN(vland,1)+' m/s로 빨라졌어요(위치에너지 → 운동에너지)<br>'
+   +'④ 수평 속도는 거의 그대로, 아래로만 중력으로 빨라져서 포물선을 그려요</div>'
+   +'<div class="skr3">기록 비교 · '+others+'<br><small>같은 모양의 점프대 4개예요. 친구와 같은 점프대에서 겨뤄 보거나, 설정에서 마찰계수를 바꿔 다시 뛰어 보세요!</small></div><button type="button" id="skrX">닫기</button>';
+  var el=document.getElementById('skres');if(!el){el=document.createElement('div');el.id='skres';(document.getElementById('app')||document.body).appendChild(el);}
+  el.innerHTML=h2;el.hidden=false;var x=document.getElementById('skrX');if(x)x.onclick=function(){el.hidden=true;};
+  clearTimeout(PG.skrT);PG.skrT=setTimeout(function(){el.hidden=true;},15000);
 }
 
 /* ===== 워터슬라이드 · 번지점프 (가상 모형) ===== */
@@ -3511,11 +3547,11 @@ function p5Build(L){
   /* 렌터카 매장: 평평한 곳 */
   var sh=p5Site(S0+2,S0+22,-12,12,2.6,function(s,o,sl,g,d){return sl+Math.abs(o-4)*0.8+Math.abs(s-(S0+8))*0.3;})||{s:S0+8,o:4,g:exGround(S0+8,4)};
   P5.shop=sh;var g=pgGmax(sh.s,sh.o,1.4);sh.gy=g;
-  pgLB(L,sh.s,sh.o,0,0,g-20,20.5,3.0,1.6,[0.24,0.25,0.28]);                      /* 주차장 바닥 */
-  for(i=0;i<4;i++)pgLB(L,sh.s,sh.o,-1.275+i*0.85,0.2,g+0.5,0.3,0.03,1.2,[0.95,0.95,0.95]);   /* 주차선 */
+  pgLB(L,sh.s,sh.o,0,0,g-20,20.5,3.8,1.6,[0.24,0.25,0.28]);                      /* 주차장 바닥 */
+  for(i=0;i<5;i++)pgLB(L,sh.s,sh.o,-1.7+i*0.85,0.2,g+0.5,0.3,0.03,1.2,[0.95,0.95,0.95]);   /* 주차선 */
   pgLB(L,sh.s,sh.o,0,-1.05,g,22,3.0,0.55,[0.96,0.96,0.97]);pgLB(L,sh.s,sh.o,0,-0.77,g+2,16,2.8,0.02,[0.55,0.72,0.86]);   /* 전시장(유리 앞면) */
   pgLB(L,sh.s,sh.o,0,-0.78,g+22,8,1.2,0.04,[0.85,0.12,0.15]);                    /* 빨간 간판(글자 없음) */
-  for(i=0;i<CARM.length;i++){var cs=sh.s-0.85+i*0.85,co=sh.o+0.2;P5.cars.push({s:cs,o:co,h:Math.PI/2,i:i});}
+  for(i=0;i<CARM.length;i++){var cs=sh.s-1.275+i*0.85,co=sh.o+0.2;P5.cars.push({s:cs,o:co,h:Math.PI/2,i:i});}
   /* 열기구 승강장 5곳 */
   var want=[[S0-28,S0-14],[S0-12,S0-2],[S0+14,S0+24],[S0+26,S0+36],[S0+38,S0+48]];
   want.forEach(function(r,j){var side=j%2?1:-1,q=p5Site(r[0],r[1],side>0?3:-14,side>0?14:-3,2.4,function(s,o,sl){return sl*2+Math.abs(Math.abs(o)-7)*0.3;});
@@ -3538,32 +3574,40 @@ function p5Build(L){
   P5.lz={s:S0+4,o:-2.2};var lg=exGround(P5.lz.s,P5.lz.o);
   [0.7,0.48,0.26,0.08].forEach(function(r,k){pgLB(L,P5.lz.s,P5.lz.o,0,0,lg+0.3+k*0.25,0.25,r*2,r*2,k%2?[1,1,1]:[0.9,0.2,0.2]);});
   if(typeof p5HorseBuild==='function')p5HorseBuild(L);
+  if(typeof dcBuild==='function')dcBuild(L);
+  if(typeof likeBuild==='function')likeBuild(L);
   P5.built=true;
 }
 function p5Stations(){
   var a=[];if(!P5.built)return a;
   P5.cars.forEach(function(c){var M=CARM[c.i];a.push({k:'car'+c.i,n:'🚗 렌터카: 테슬라 '+M.n,s:c.s,o:c.o-0.35,y:exGround(c.s,c.o-0.35),r:0.24});});
   if(typeof PLT!=='undefined'&&PLT.wt)PLT.wt.forEach(function(q,i){var so=q.o+(q.o>0?-1.0:1.0);a.push({k:'wt'+i,n:'🌀 풍력발전기 날개 끝 매달리기',s:q.s,o:so,y:exGround(q.s,so),r:0.6});});
+  if(typeof LKV!=='undefined'&&LKV.ready)a.push({k:'like',n:'📱 좋아요 여행 체험관',s:LKV.s,o:LKV.o+(LKV.o>0?-0.6:0.6),y:exGround(LKV.s,LKV.o+(LKV.o>0?-0.6:0.6)),r:0.6});
+  if(typeof DC!=='undefined'&&DC.s)a.push({k:'dc',n:'🖥️ AI 데이터센터 (수력 전기로 운영)',s:DC.s+1.6,o:DC.o,y:exGround(DC.s+1.6,DC.o),r:0.8});
   (P5.horses||[]).forEach(function(q){a.push({k:'horse'+q.i,n:'🐴 말 보관소: '+HORSES[q.i].n+' 빌려 타기',s:q.s,o:q.o-0.3,y:exGround(q.s,q.o-0.3),r:0.3});});
   P5.bal.forEach(function(b){a.push({k:'bal'+b.i,n:'🎈 열기구 승강장 '+(b.i+1),s:b.s,o:b.o+0.75,y:exGround(b.s,b.o+0.75),r:0.6});});
   (P5.helis||[]).forEach(function(hp){var so=hp.o+(hp.o>0?-1.2:1.2);a.push({k:hp.i?'heli'+hp.i:'heli',n:'🚁 헬기장 '+(hp.i+1)+' · 공수 강하',s:hp.s,o:so,y:exGround(hp.s,so),r:0.8});});
   return a;
 }
-function p5Is(k){return /^horse\d$|^wt\d$|^car\d$|^bal\d$|^heli\d?$|^eagle$/.test(k||'');}
-function p5Name(k){if(/^car/.test(k))return '테슬라 '+CARM[+k.slice(3)].n+' 운전하기';if(/^bal/.test(k))return '열기구';if(/^heli/.test(k))return '헬기';if(/^wt/.test(k))return '풍력발전기 날개';if(/^horse/.test(k))return '말('+HORSES[+k.slice(5)].n+')';return '독수리';}
+function p5Is(k){return /^like$|^dc$|^horse\d$|^wt\d$|^car\d$|^bal\d$|^heli\d?$|^eagle$/.test(k||'');}
+function p5Name(k){if(/^car/.test(k))return '테슬라 '+CARM[+k.slice(3)].n+' 운전하기';if(/^bal/.test(k))return '열기구';if(/^heli/.test(k))return '헬기';if(/^wt/.test(k))return '풍력발전기 날개';if(/^horse/.test(k))return '말('+HORSES[+k.slice(5)].n+')';if(k==='dc')return '데이터센터 견학';if(k==='like')return '좋아요 여행';return '독수리';}
 
 /* ---------- 그리기 도우미 ---------- */
-/* 테슬라 차종 3가지(대략값: 제조사 발표·자동차 매체 자료의 근삿값, 트림·연식에 따라 달라요)
+/* 테슬라 차종 4가지(대략값: 제조사 발표·자동차 매체 자료의 근삿값, 트림·연식에 따라 달라요)
    L 길이·W 너비·H 높이(m) · m 무게(kg) · kwh 배터리 · P 최대 출력(W) · vmax 최고 속도(m/s) · cd 공기저항계수 · A 앞면적(m²) */
 var CARM=[
  {n:'모델 S',L:5.02,W:1.96,H:1.43,m:2070,kwh:100,P:500e3,vmax:69,cd:0.21,A:2.34,col:[0.70,0.04,0.07],t:'s',R:0.36,ax:[1.50,-1.46],
   st:[[-2.51,0.40,0.86,0.90,0.78,0.66,0],[-2.46,0.31,0.95,0.99,0.92,0.80,0],[-2.32,0.27,0.98,1.02,0.97,0.84,0],[-2.12,0.26,0.97,1.05,0.98,0.80,2],
       [-1.60,0.26,0.96,1.28,0.98,0.68,2],[-1.00,0.26,0.95,1.40,0.98,0.63,2],[-0.40,0.26,0.94,1.43,0.98,0.62,2],[0.25,0.26,0.93,1.38,0.98,0.64,2],
       [1.15,0.26,0.90,0.94,0.98,0.84,2],[1.80,0.27,0.80,0.84,0.97,0.86,0],[2.28,0.30,0.69,0.73,0.92,0.80,0],[2.46,0.36,0.59,0.63,0.82,0.70,0],[2.51,0.42,0.53,0.56,0.68,0.52,0]]},
- {n:'모델 Y',L:4.79,W:1.92,H:1.62,m:1980,kwh:75,P:340e3,vmax:56,cd:0.23,A:2.6,col:[0.93,0.93,0.95],t:'y',R:0.36,ax:[1.42,-1.47],
-  st:[[-2.395,0.44,0.92,0.96,0.76,0.64,0],[-2.34,0.34,1.00,1.05,0.90,0.78,0],[-2.20,0.31,1.03,1.12,0.95,0.78,2],[-1.80,0.31,1.02,1.40,0.96,0.67,2],
-      [-1.20,0.31,1.01,1.57,0.96,0.63,2],[-0.40,0.31,1.00,1.62,0.96,0.62,2],[0.20,0.31,0.99,1.55,0.96,0.63,2],[1.10,0.31,0.97,1.02,0.96,0.82,2],
-      [1.70,0.32,0.90,0.94,0.95,0.84,0],[2.20,0.36,0.79,0.83,0.90,0.78,0],[2.35,0.42,0.69,0.73,0.80,0.66,0],[2.395,0.48,0.61,0.64,0.66,0.50,0]]},
+ {n:'모델 Y',L:4.79,W:1.92,H:1.62,m:1980,kwh:75,P:340e3,vmax:56,cd:0.23,A:2.6,col:[0.93,0.93,0.95],t:'y',R:0.385,suv:1,ax:[1.42,-1.47],
+  st:[[-2.395,0.48,0.95,0.99,0.78,0.66,0],[-2.34,0.36,1.04,1.10,0.92,0.80,0],[-2.22,0.34,1.07,1.18,0.95,0.80,2],[-1.90,0.34,1.06,1.45,0.96,0.70,2],
+      [-1.30,0.34,1.05,1.60,0.96,0.65,2],[-0.40,0.34,1.04,1.64,0.96,0.64,2],[0.25,0.34,1.03,1.58,0.96,0.65,2],[1.12,0.34,1.00,1.06,0.96,0.84,2],
+      [1.70,0.35,0.94,0.98,0.95,0.86,0],[2.20,0.38,0.82,0.86,0.90,0.80,0],[2.35,0.44,0.72,0.76,0.80,0.68,0],[2.395,0.50,0.63,0.66,0.66,0.52,0]]},
+ {n:'모델 X',L:5.05,W:2.0,H:1.68,m:2350,kwh:100,P:500e3,vmax:66,cd:0.24,A:2.8,col:[0.12,0.3,0.62],t:'x',R:0.395,suv:1,ax:[1.47,-1.495],
+  st:[[-2.525,0.48,0.98,1.02,0.80,0.68,0],[-2.47,0.36,1.07,1.14,0.95,0.84,0],[-2.32,0.34,1.10,1.28,0.99,0.82,2],[-2.05,0.34,1.09,1.52,1.0,0.72,2],
+      [-1.40,0.34,1.08,1.66,1.0,0.67,1],[-0.40,0.34,1.07,1.68,1.0,0.66,1],[0.10,0.34,1.065,1.66,1.0,0.67,2],[0.55,0.34,1.06,1.56,1.0,0.69,2],
+      [1.22,0.34,1.03,1.08,1.0,0.86,2],[1.80,0.35,0.96,1.00,0.99,0.88,0],[2.30,0.38,0.84,0.88,0.94,0.82,0],[2.47,0.44,0.73,0.77,0.84,0.70,0],[2.525,0.50,0.64,0.67,0.70,0.54,0]]},
  {n:'사이버트럭',L:5.68,W:2.03,H:1.79,m:3000,kwh:123,P:447e3,vmax:50,cd:0.34,A:3.2,col:[0.72,0.74,0.77],t:'c',R:0.44,ax:[1.95,-1.86],
   st:[[-2.84,0.56,1.12,1.28,0.98,0.92,0],[-2.80,0.48,1.16,1.30,1.015,0.95,0],[-1.00,0.46,1.22,1.635,1.015,0.84,1],[-0.15,0.46,1.24,1.79,1.015,0.80,2],
       [1.30,0.46,1.20,1.417,1.015,0.86,2],[2.00,0.47,1.12,1.24,1.01,0.92,0],[2.78,0.52,0.98,1.03,0.99,0.92,0],[2.84,0.60,0.94,1.0,0.96,0.90,0]]}];
@@ -3584,13 +3628,16 @@ function p5Sub(a,b){return [a[0]-b[0],a[1]-b[1],a[2]-b[2]];}
 function p5FlatTri(T,a,b,c,col,ctr){var n=p5Nrm(p5Crs(p5Sub(b,a),p5Sub(c,a)));var m=[(a[0]+b[0]+c[0])/3-ctr[0],(a[1]+b[1]+c[1])/3-ctr[1],(a[2]+b[2]+c[2])/3-ctr[2]];if(n[0]*m[0]+n[1]*m[1]+n[2]*m[2]<0)n=[-n[0],-n[1],-n[2]];p5Tri(T,a,b,c,n,n,n,col);}
 /* 차 몸체: 앞뒤로 늘어선 단면(링)들을 이어 붙여 매끈한 곡면을 만들어요 */
 function p5CarTpl(M){
-  if(M.tpl)return M.tpl;var T=p5Tpl(),Tg=p5Tpl(),S=M.st,cy=M.t==='c',PAINT=[M.col[0]+8,M.col[1],M.col[2]],GL=[8.04,0.05,0.07],UND=[0.07,0.07,0.08];
+  if(M.tpl)return M.tpl;
+  if(M.suv&&!M.lift){M.lift=1;var nS=M.st.length;M.st=M.st.map(function(q,i){q=q.slice();q[1]+=0.08;if(i>=nS-4){q[2]+=0.07;q[3]+=0.07;}if(i<=1){q[2]+=0.04;q[3]+=0.04;}return q;});}   /* SUV: 차체를 높이고 앞·뒤를 더 높고 반듯하게 */
+  var T=p5Tpl(),Tg=p5Tpl(),S=M.st,cy=M.t==='c',PAINT=[M.col[0]+8,M.col[1],M.col[2]],GL=[8.04,0.05,0.07],UND=[0.07,0.07,0.08];
   function ring(q){var x=q[0],yb=q[1],ys=q[2],yt=q[3],wb=q[4],wt=q[5];
     if(cy)return [[x,yb,0],[x,yb,wb-0.06],[x,yb+0.06,wb],[x,ys,wb],[x,yt,wt],[x,yt,0]];
-    return [[x,yb,0],[x,yb,wb-0.14],[x,yb+0.07,wb-0.03],[x,yb+0.35*(ys-yb),wb],[x,ys-0.07,wb-0.005],[x,ys,wb-0.05],[x,Math.max(ys+0.005,yt-0.06),wt],[x,yt-0.012,wt*0.55],[x,yt,0]];}
+    return [[x,yb,0],[x,yb,wb-0.14],[x,yb+0.07,wb-0.03],[x,yb+(M.suv?0.2:0.35)*(ys-yb),wb],[x,ys-0.07,wb-0.005],[x,ys,wb-0.05],[x,Math.max(ys+0.005,yt-0.06),wt],[x,yt-0.012,wt*0.55],[x,yt,0]];}
   var KD=cy?['u','b','b','g1','g2']:['u','b','b','b','b','g1','g2','g2'];
   var R=S.map(ring),ni=R.length,nj=R[0].length,i,j;
-  function colOf(i,j){var k=KD[j],g=Math.min(S[i][6],S[i+1][6]);if(k==='u')return UND;if(k==='g1')return g>=1?GL:PAINT;if(k==='g2')return g>=2?GL:PAINT;return PAINT;}
+  var TRIM=[0.1,0.1,0.11];
+  function colOf(i,j){var k=KD[j],g=Math.min(S[i][6],S[i+1][6]);if(k==='u')return UND;if(M.suv&&!cy&&j>=1&&j<=2)return TRIM;if(M.suv&&!cy&&j===3&&g<1)return TRIM;   /* SUV 아래쪽 검은 몰딩 */if(k==='g1')return g>=1?GL:PAINT;if(k==='g2')return g>=2?GL:PAINT;return PAINT;}
   function V(i,j,s){var v=R[i][j];return [v[0],v[1],v[2]*s];}
   function DT(i,j){return (KD[j]!=='u'&&KD[j]!=='b'&&Math.min(S[i][6],S[i+1][6])>=1)?Tg:T;}   /* 실내(1인칭)에서는 유리·지붕을 빼고 그려요 */
   if(cy){
@@ -3620,12 +3667,12 @@ function p5CarTpl(M){
         p5Tri(T,W(P0,a0),W(P1,a0),W(P1,a1),WN(P0,a0),WN(P1,a0),WN(P1,a1),TIRE);p5Tri(T,W(P0,a0),W(P1,a1),W(P0,a1),WN(P0,a0),WN(P1,a1),WN(P0,a1),TIRE);}
       var zf=z0+s*(tw/2-0.01),cc=[axx,Rw,zf],nf=[0,0,s];
       p5Tri(T,cc,[axx+Math.cos(a0)*0.62*Rw,Rw+Math.sin(a0)*0.62*Rw,zf],[axx+Math.cos(a1)*0.62*Rw,Rw+Math.sin(a1)*0.62*Rw,zf],nf,nf,nf,RIM);
-      if(a<NS/2){var ra=Rw+0.07,za=s*(cy?1.02:(M.W/2-0.005));   /* 위쪽 반원 아치 */
+      if(a<NS/2){var ra=Rw+(M.suv?0.12:0.07),za=s*(cy?1.02:(M.W/2-0.005));   /* 위쪽 반원 아치 */
         p5Tri(T,[axx,Rw,za],[axx+Math.cos(a0)*ra,Rw+Math.sin(a0)*ra,za],[axx+Math.cos(a1)*ra,Rw+Math.sin(a1)*ra,za],nf,nf,nf,ARCH);}}});});
   M.zc=zc;M.tw=tw;M.tpc={p:T.p.slice(),n:T.n.slice(),c:T.c.slice()};M.tpl={p:T.p.concat(Tg.p),n:T.n.concat(Tg.n),c:T.c.concat(Tg.c)};return M.tpl;
 }
 /* 지형 위 차의 자세: 네 바퀴 자리의 땅 높이(화면에 그려진 지형 그물 그대로) */
-function p5Gnd(s,o){var g=meshH(s,o)*UV,sh=P5.shop;if(sh&&sh.gy&&Math.abs(s-sh.s)<1.5&&Math.abs(o-sh.o)<0.8)g=Math.max(g,sh.gy+0.5);return g;}
+function p5Gnd(s,o){var g=meshH(s,o)*UV,sh=P5.shop;if(sh&&sh.gy&&Math.abs(s-sh.s)<1.9&&Math.abs(o-sh.o)<0.8)g=Math.max(g,sh.gy+0.5);return g;}
 function p5CarH(s,o,h,M){
   var Ld=M.L*CDS/UM*0.36,Wd=M.W*CDS/UM*0.42,c=Math.cos(h),sn=Math.sin(h);
   var hF=p5Gnd(s+c*Ld,o+sn*Ld),hB=p5Gnd(s-c*Ld,o-sn*Ld),hL=p5Gnd(s-sn*Wd,o+c*Wd),hR=p5Gnd(s+sn*Wd,o-c*Wd),hc=p5Gnd(s,o);
@@ -3663,9 +3710,11 @@ function p5CarDraw(L,s,o,h,M,spin,H,fp,steer){
   var WL=[2.3,2.3,2.2],RL=[2.1,0.12,0.1],t=M.t,hl=M.L/2,PA=[M.col[0]+8,M.col[1],M.col[2]];
   if(t==='c'){Bx(hl-0.02,0.96,0,0.05,0.035,1.86,WL);Bx(-hl+0.0,1.22,0,0.05,0.04,1.8,RL);
     [1,-1].forEach(function(s2){Bx(M.ax[0],0.46,s2*1.0,1.25,0.5,0.05,[0.16,0.16,0.17]);Bx(M.ax[1],0.46,s2*1.0,1.25,0.5,0.05,[0.16,0.16,0.17]);});}
+  else if(t==='x'){[1,-1].forEach(function(s2){Bx(hl-0.12,0.62,s2*0.68,0.14,0.06,0.26,WL);Bx(-hl+0.05,0.92,s2*0.66,0.08,0.06,0.36,RL);});
+    Bx(-0.9,1.675,0,1.0,0.012,0.02,[0.08,0.08,0.09]);[1,-1].forEach(function(s2){Bx(-0.9,1.64,s2*0.5,1.0,0.012,0.02,[0.08,0.08,0.09]);});}   /* 팔콘 윙 도어 이음선 */
   else if(t==='y'){Bx(hl-0.08,0.70,0,0.05,0.025,1.5,WL);[1,-1].forEach(function(s2){Bx(hl-0.12,0.58,s2*0.6,0.06,0.05,0.26,WL);});Bx(-hl+0.03,0.95,0,0.05,0.035,1.45,RL);}
   else{[1,-1].forEach(function(s2){Bx(hl-0.10,0.60,s2*0.66,0.18,0.05,0.24,WL);Bx(-hl+0.06,0.84,s2*0.68,0.08,0.07,0.32,RL);});}
-  var mx=t==='c'?1.15:(t==='y'?0.98:1.05),my=t==='c'?1.25:(t==='y'?1.02:0.95);
+  var mx=t==='c'?1.15:(t==='y'?1.0:(t==='x'?1.08:1.05)),my=t==='c'?1.25:(t==='y'?1.08:(t==='x'?1.1:0.95));
   [1,-1].forEach(function(s2){Bx(mx,my,s2*(M.W/2+0.08),0.16,0.1,0.16,PA);});
   if(fp){/* 실내: 대시보드 · 가운데 큰 화면 · 핸들 · 앞유리 기둥 */
     var ws=M.st.filter(function(q){return q[6]>=1;}),wb=ws[ws.length-1],rf=ws[ws.length-2],bl=wb[2],IN=[4.26,0.25,0.27],TR=[4.14,0.14,0.15];
@@ -3890,10 +3939,12 @@ function p5Start(R){
   if(/^bal/.test(k)){var b=P5.bal[+k.slice(3)];R.b=b;R.s=b.s;R.o=b.o;R.y=b.gy+0.5;R.vz=0;R.vs=0;R.vo=0;R.V=2200;R.m0=420;R.fuel=0;R.burn=false;R.ymax=R.y;
     var A=p5Rho(R.y),mt=R.m0+E.mass;R.Ti=A.T*A.rho/(A.rho-mt/R.V)-4;R.y0=R.y;
     E.avs=0.28;E.pose=null;E.hide=false;E.air=true;EX.dist=clamp(EX.dist,2.6,4.5);EX.pitch=0.35;
-    exMsg('🎈 열기구에 탔어요! 스페이스(점프 버튼)를 누르고 있으면 버너가 공기를 데워 떠올라요 · Shift/S: 공기 빼기');return;}
+    exMsg('🎈 열기구에 탔어요! 스페이스(점프 버튼)를 누르고 있으면 버너로 떠올라요 · Shift(아래로 버튼) 공기 빼기 · W/A/S/D(조이스틱) 작은 프로펠러로 이동 · 120 m 넘게 올라가면 E로 낙하산 탈출');return;}
   if(/^heli/.test(k)){var hp=P5.heli=P5.helis[+(k.slice(4)||0)]||P5.helis[0];R.pad=hp;R.ph='board';R.s=hp.s;R.o=hp.o;R.y=hp.gy+2.6;R.h=Math.atan2(-hp.o,0.6);R.vf=0;R.vz=0;R.Euse=0;R.ymaxH=R.y;R.pit=0;R.rol=0;R.gnd=true;
     E.avs=1;E.pose=null;E.hide=true;E.air=true;EX.dist=clamp(EX.dist,2.8,4.5);EX.pitch=0.25;EX.yaw=R.h;
     exMsg('🚁 헬기 조종! 스페이스(점프 버튼) 위로 · Shift 아래로 · W 앞으로 · S 뒤로/감속 · A/D 방향 · V(1인칭 버튼) 조종석 시점 · 땅에서 300 m 넘게 올라가면 E로 뛰어내려요');return;}
+  if(k==='like'){R.st=0;R.mv=null;var p0=LKV.P[LKV.cp.phone];R.pk={s:p0.s,o:p0.o,y:p0.y};R.hd=Math.PI;E.hide=false;E.pose='sit';E.avs=0.45;E.air=true;EX.dist=clamp(EX.dist,1.6,2.4);EX.pitch=0.22;EX.yaw=R.hd;exMsg('📱 좋아요 여행 시작! ♥ 데이터 캡슐에 올라탔어요 · 카드의 [♥ 누르기] → [🚀 출발 ▶]로 따라가요 · E 체험 끝');return;}
+  if(k==='dc'){R.t=0;R.step=0;R.st2=0;E.air=false;exMsg('🖥️ AI 데이터센터 견학 시작! 카드의 [다음 ▶] 버튼으로 한 장씩 넘겨요 · E 견학 끝');return;}
   if(/^horse/.test(k)){var hq=P5.horses[+k.slice(5)];R.hq=hq;R.ci=hq.i;R.s=hq.s;R.o=hq.o;R.h=hq.h;R.v=0;R.tv=0;R.ph=0;R.y=meshH(hq.s,hq.o)*UV;R.y0=R.y;R.jz=0;R.vz=0;R.work=0;R.dist=0;R.vmx=0;R.pit=0;R.yr=0;
     E.avs=0.42;E.pose='sit';E.hide=false;E.air=false;EX.dist=clamp(EX.dist,2,3.4);EX.pitch=0.25;EX.yaw=R.h;
     exMsg('🐴 '+HORSES[hq.i].n+'에 올라탔어요! W 빨라지기(걸음→빠른걸음→구보→질주) · S 느려지기 · A/D 방향 · 스페이스 점프 · E 내리기');return;}
@@ -3913,6 +3964,8 @@ function p5Step(R,dt){
   var E=EX,k=R.k,ts=R.ts||1,n=Math.max(1,Math.ceil(dt*ts/0.03)),h=dt*ts/n,i;R.t+=dt;
   var fw=((E.keys.w||E.keys.up)?1:0)-((E.keys.s||E.keys.down)?1:0)-E.jy,st=((E.keys.d||E.keys.right)?1:0)-((E.keys.a||E.keys.left)?1:0)+E.jx;
   fw=clamp(fw,-1,1);st=clamp(st,-1,1);
+  if(k==='like'){likeStep(R,dt,fw);return;}
+  if(k==='dc'){R.t+=dt;var nx=(fw>0.5&&!R.fwH)?1:((fw<-0.5&&!R.fwH)?-1:0);R.fwH=Math.abs(fw)>0.5;if(nx)dcGo(nx);return;}
   if(/^horse/.test(k)){var mh=500+E.mass;
     for(i=0;i<n;i++){R.tv=clamp(R.tv+fw*5*h,0,13);if(Math.abs(fw)<0.05&&R.tv<0.8)R.tv=0;   /* W를 누르는 만큼 목표 빠르기가 올라가요 */
       var HH=p5HorseH(R.s,R.o,R.h),sl=(HH[0]-HH[1])/(2*HRS),sn=sl/Math.sqrt(1+sl*sl),vlim=13;
@@ -3921,7 +3974,7 @@ function p5Step(R,dt){
       if(R.v>v0)R.work+=0.5*mh*(R.v*R.v-v0*v0);if(sn>0)R.work+=mh*EXG*sn*R.v*h;R.work+=mh*0.25*R.v*h;   /* 근육이 한 일 */
       R.yr+=(st*(1.3/(1+R.v*0.12))-R.yr)*Math.min(1,h*4);R.h+=R.yr*h;
       var ns=R.s+Math.cos(R.h)*R.v*h/UM,no=R.o+Math.sin(R.h)*R.v*h/UM;if(ns>EXSMIN&&ns<NR-R0-4&&Math.abs(no)<41){R.s=ns;R.o=no;}else R.v*=0.5;
-      R.ph+=R.v*h/(1.6+R.v*0.3)*12;R.dist+=R.v*h;R.vmx=Math.max(R.vmx,R.v);
+      R.ph+=[0,0.9,1.4,1.7,2.1][p5Gait(R.v)]*h;   /* 실제 말의 발걸음 빠르기(초당 걸음 수)에 맞춰요 */R.dist+=R.v*h;R.vmx=Math.max(R.vmx,R.v);
       if(E.keys.space&&R.jz<=0&&R.vz===0){R.vz=4.4;}   /* 점프: 약 1 m 높이 */
       if(R.jz>0||R.vz>0){R.vz-=EXG*h;R.jz+=R.vz*h;if(R.jz<=0){R.jz=0;R.vz=0;}}
       var gy=Math.max(HH[2],(HH[0]+HH[1])/2);R.y+=(gy-R.y)*Math.min(1,h*10);R.pit+=(-Math.atan(sl)*0.9-R.pit)*Math.min(1,h*6);}
@@ -3956,7 +4009,9 @@ function p5Step(R,dt){
     var gy=R.wh[4];E.s=R.s;E.off=R.o;E.y=gy;E.hdg=R.h;E.vy=0;E.vh=[Math.cos(R.h)*R.v,Math.sin(R.h)*R.v];E.air=false;E.spd=Math.abs(R.v);
     if(!E.lookDrag&&Math.abs(R.v)>1){var d=R.h-EX.yaw;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;EX.yaw+=d*Math.min(1,dt*2.5);}
     return;}
-  if(/^bal/.test(k)){var mt=R.m0+E.mass,burn=!!E.keys.space,vent=!!E.keys.shift||fw<-0.5;R.burn=burn;
+  if(/^bal/.test(k)){var mt=R.m0+E.mass,burn=!!E.keys.space,vent=!!E.keys.shift||!!E.keys.c;R.burn=burn;
+    var apb=document.getElementById('app');if(apb&&!apb.classList.contains('heli'))apb.classList.add('heli');   /* 휴대폰: '아래로(공기 빼기)' 버튼 보이기 */
+    var cy2=Math.cos(EX.yaw),sy2=Math.sin(EX.yaw),fs=(fw*cy2-st*sy2)*7,fo=(fw*sy2+st*cy2)*7;   /* 게임용 작은 프로펠러: 카메라가 보는 방향 기준 최대 7 m/s */
     for(i=0;i<n;i++){var A=p5Rho(R.y),rin=A.p/(287*R.Ti),C=rin*R.V*1005;
       var Q=(burn?3.0e6*0.75:0)-4000*(R.Ti-A.T)-(vent?60000*(R.Ti-A.T)/40:0);
       if(burn)R.fuel+=3.0e6/46e6*h;
@@ -3964,12 +4019,13 @@ function p5Step(R,dt){
       var lift=(A.rho-rin)*R.V*EXG,Wt=mt*EXG,Md=mt+rin*R.V+0.5*A.rho*R.V,Dz=0.5*A.rho*0.5*200*R.vz*Math.abs(R.vz);
       R.vz+=(lift-Wt-Dz)/Md*h;
       var agl=R.y-exGround(R.s,R.o),wd=0.6+agl/1500*1.8,ws=Math.min(9,1.5+agl/1000*3);if(agl<3)ws=0;
-      R.vs+=(Math.cos(wd)*ws-R.vs)*Math.min(1,h*0.3);R.vo+=(Math.sin(wd)*ws-R.vo)*Math.min(1,h*0.3);
+      R.fs=(R.fs||0)+(fs-(R.fs||0))*Math.min(1,h*1.5);R.fo=(R.fo||0)+(fo-(R.fo||0))*Math.min(1,h*1.5);if(agl<3){R.fs*=0.9;R.fo*=0.9;}
+      R.vs+=(Math.cos(wd)*ws+R.fs-R.vs)*Math.min(1,h*1.2);R.vo+=(Math.sin(wd)*ws+R.fo-R.vo)*Math.min(1,h*1.2);
       R.y+=R.vz*h;var ns2=R.s+R.vs*h/UM,no2=clamp(R.o+R.vo*h/UM,-40,40);if(ns2>EXSMIN&&ns2<NR-R0-4)R.s=ns2;R.o=no2;
       var gg=exGround(R.s,R.o)+0.5;if(R.y<gg){R.y=gg;if(R.vz<0){R.land=Math.abs(R.vz);R.vz=0;}R.vs*=0.9;R.vo*=0.9;}
       R.ymax=Math.max(R.ymax,R.y);R.lift=lift;R.Wt=Wt;R.wd=wd;R.ws=ws;R.agl=agl;R.Tout=A.T;R.rin=rin;R.rout=A.rho;
     }
-    E.s=R.s;E.off=R.o;E.y=R.y+1;E.vy=R.vz;E.vh=[R.vs,R.vo];E.air=true;E.hdg=Math.atan2(R.vo,R.vs+1e-6);return;}
+    E.s=R.s;E.off=R.o;E.y=R.y+1;E.vy=R.vz;E.vh=[R.vs,R.vo];E.air=true;if(Math.hypot(R.fs||0,R.fo||0)>0.5)E.hdg=Math.atan2(R.fo,R.fs);return;}
   if(/^heli/.test(k)){
     if(R.ph==='board'){R.bt=(R.bt||0)+dt;if(R.bt>1.5){R.ph='fly';exMsg('🚁 엔진 시동 완료! 스페이스로 떠올라요');}}
     else if(R.ph==='fly'){var mh=5000+E.mass,Wt=mh*EXG,Ar=211;
@@ -4030,18 +4086,21 @@ function p5Act(R){
       R.ph='free';R.vz=Math.min(0,R.vz);EX.hide=false;var ap1=document.getElementById('app');if(ap1)ap1.classList.remove('heli');EX.avs=1;R.h0=R.h;R.hp={s:R.s,o:R.o,y:R.y,h:R.h,t:0};R.y0=R.y;R.auto=0;if(ag<900){R.auto=1;p5Deploy(R,true);return true;}exMsg('🪂 점프! 자유낙하 중 · W 머리부터(빠르게) · S 팔다리 벌리기(느리게) · A/D 방향 · E 낙하산');return true;}
     if(R.ph==='free'){p5Deploy(R,false);return true;}
     if(R.ph==='landed'){pgEnd(false);return true;}return true;}
-  if(/^bal/.test(k)){if(R.y-exGround(R.s,R.o)>3){exMsg('착륙해야 내릴 수 있어요 (Shift·S로 공기를 빼서 천천히 내려가요)');return true;}pgEnd(false);return true;}
+  if(/^bal/.test(k)){var ag2=R.y-exGround(R.s,R.o);
+    if(ag2>=120){p5BalBail(R);return true;}
+    if(ag2>3){exMsg('땅에서 120 m 넘게 올라가면 낙하산을 메고 뛰어내릴 수 있어요 · 착륙하려면 Shift(아래로 버튼)로 공기를 빼요 (지금 '+fN(ag2,0)+' m)');return true;}pgEnd(false);return true;}
   if(/^car/.test(k)){if(Math.abs(R.v)>3.5){exMsg('먼저 S로 멈춘 뒤 반납해요');return true;}pgEnd(false);return true;}
   if(k==='eagle'){pgEnd(false);return true;}
   if(/^wt/.test(k)){R.rel=true;pgEnd(false);return true;}
+  if(k==='dc'||k==='like'){pgEnd(false);return true;}
   if(/^horse/.test(k)){if(R.v>2){exMsg('S로 속도를 줄인 뒤 내려요');return true;}pgEnd(false);return true;}
   return false;
 }
 function p5Ab(R){var k=R.k;
   if(/^heli/.test(k)){if(R.ph==='fly'){if(R.gnd&&Math.abs(R.vf)<3)return '⏏ 헬기에서 내리기 (E)';return R.y-exGround(R.s,R.o)>=300?'🪂 뛰어내리기 (E)':null;}return R.ph==='free'?'🪂 낙하산 펴기 (E)':(R.ph==='landed'?'⏏ 내리기 (E)':null);}
-  if(/^bal/.test(k))return R.y-exGround(R.s,R.o)<3?'⏏ 열기구에서 내리기 (E)':null;
+  if(/^bal/.test(k)){var ag3=R.y-exGround(R.s,R.o);return ag3<3?'⏏ 열기구에서 내리기 (E)':(ag3>=120?'🪂 낙하산 메고 탈출 (E)':null);}
   if(/^car/.test(k))return Math.abs(R.v)<3.5?'🔑 차 반납하기 (E)':null;
-  if(k==='eagle')return '🦅 뛰어내리기 (E)';if(/^wt/.test(k))return '🌀 손 놓기 (E)';if(/^horse/.test(k))return R.v<=2?'🐴 말에서 내리기 (E)':null;return null;}
+  if(k==='eagle')return '🦅 뛰어내리기 (E)';if(/^wt/.test(k))return '🌀 손 놓기 (E)';if(/^horse/.test(k))return R.v<=2?'🐴 말에서 내리기 (E)':null;if(k==='dc')return '🚪 견학 끝 (E)';if(k==='like')return '🚪 체험 끝 (E)';return null;}
 function p5End(R,force){
   var ap0=document.getElementById('app');if(ap0)ap0.classList.remove('heli');
   var E=EX,k=R.k;E.hide=false;E.avs=1;E.avp=0;E.pose=null;E.ride=null;E.lost=0;E.el=0;
@@ -4051,6 +4110,8 @@ function p5End(R,force){
   else if(/^heli/.test(k)){if(R.ph==='landed')PG.sum[k]='자유낙하 최고 속도 '+fN(R.vmax||0,0)+' m/s ('+fN((R.vmax||0)*3.6,0)+' km/h) · 착지 속도 '+fN(R.vland||0,1)+' m/s · 표적까지 '+fN(R.lzd||0,0)+' m';
     if(R.ph==='fly'&&R.gnd&&!force){E.s=R.s;E.off=R.o+0.3;E.y=exGround(E.s,E.off);PG.sum[k]='헬기 최고 높이 해발 '+fN(R.ymaxH,0)+' m · 쓴 연료 에너지 '+exE(R.Euse/0.3);}
     else if(force||R.ph==='board'||R.ph==='fly'){E.s=P5.heli.s;E.off=P5.heli.o+(P5.heli.o>0?-1.2:1.2);E.y=exGround(E.s,E.off);}else{E.s=R.s;E.off=R.o;E.y=exGround(E.s,E.off);}E.air=false;}
+  else if(k==='dc'){E.air=false;}
+  else if(k==='like'){E.hide=false;E.s=LKV.s;E.off=LKV.o+(LKV.o>0?-0.6:0.6);E.y=exGround(E.s,E.off);E.air=false;}
   else if(/^horse/.test(k)){PG.sum[k]='달린 거리 '+fN(R.dist,0)+' m · 최고 '+fN(R.vmx*3.6,0)+' km/h · 먹이 에너지 약 '+fN(R.work/0.25/4184,0)+' kcal';E.s=R.s;E.off=R.o+(R.o>0?-0.3:0.3);E.y=exGround(E.s,E.off);E.air=false;E.avp=0;exMsg('🐴 '+HORSES[R.ci].n+'에서 내렸어요. 말은 혼자 마구간으로 돌아갔어요');}
   else if(/^wt/.test(k)){var TT2=R.tip||p5WtTip(R.q,P5.tm||0),vv=TT2.v;PG.sum[k]='날개 끝 속도 '+fN(vv*3.6,0)+' km/h · 높이 변화 '+fN(R.ymax-R.ymin,0)+' m';
     E.air=true;E.hide=false;E.vy=Math.cos(TT2.a)*vv;E.vh=[0,-Math.sin(TT2.a)*vv];if(E.y<exGround(E.s,E.off))E.y=exGround(E.s,E.off);
@@ -4063,6 +4124,8 @@ function p5End(R,force){
 /* ---------- 설명 카드 ---------- */
 function p5Text(k,R){
   var E=EX,m=E.mass;
+  if(k==='dc')return dcText(R);
+  if(k==='like')return likeText(R);
   if(/^horse/.test(k)){var H=HORSES[+k.slice(5)],mh=500+m;
     if(!R)return '<b>🐴 말 보관소 · '+H.n+'</b>말을 빌려 산길을 달려요. 말은 먹이(화학에너지)를 근육에서 운동에너지와 위치에너지로 바꿔요.<br><span class="plcoin">말 무게 약 500 kg · 걸음 약 6 km/h · 빠른걸음 약 15 km/h · 구보 약 25 km/h · 질주 약 47 km/h</span><br><small>W를 누를수록 빨라지고 S로 느려져요. 오르막에서는 근육의 힘(일률)에 한계가 있어 느려져요. 근육은 먹이 에너지의 약 25%만 일로 바꾸고 나머지는 열이 돼요(그래서 달리면 몸이 더워져요).'+(PG.sum[k]?'<br>지난 기록: '+PG.sum[k]:'')+'</small>';
     var gait=R.v<0.3?'멈춤':(R.v<2.5?'걸음':(R.v<5.5?'빠른걸음':(R.v<9?'구보':'질주')));
@@ -4072,12 +4135,12 @@ function p5Text(k,R){
     var T=R.tip||p5WtTip(q,P5.tm||0),mm=m,h0=T.y-exGround(T.s,T.o);
     return '<b>🌀 날개 끝에 매달리는 중</b>땅 위 <b>'+fN(h0,0)+' m</b> · 속도 <b>'+fN(v*3.6,0)+' km/h</b> · 원심 효과 약 <b>'+fN(ac/9.8,1)+' g</b><br><span class="plcoin">운동에너지 '+exE(0.5*mm*v*v)+'(늘 같음) · 위치에너지(가장 낮을 때보다) '+exE(mm*EXG*WNP.R*(1+Math.sin(T.a)))+'</span><br><small>E로 손을 놓으면 그 순간 날개가 움직이던 방향(원의 접선 방향)으로 날아가요. 원 운동하던 물체는 붙잡는 힘이 사라지면 곧게 날아가거든요!</small>';}
   if(/^car/.test(k)){var M=CARM[+k.slice(3)];
-    if(!R)return '<b>🚗 렌터카 · 테슬라 '+M.n+' ('+{s:'세단',y:'SUV',c:'전기 픽업트럭 · 스테인리스 강철 차체'}[M.t]+')</b>전기차는 배터리의 <b>전기에너지</b>로 모터를 돌려 <b>운동에너지</b>를 만들어요. 브레이크를 밟으면 모터가 거꾸로 발전기가 되어 운동에너지를 다시 전기로 바꿔요(<b>회생 제동</b>).<br><span class="plcoin">무게 약 '+fN(M.m,0)+' kg · 배터리 약 '+M.kwh+' kWh · 최고 출력 약 '+fN(M.P/1000,0)+' kW · 공기저항계수 Cd 약 '+M.cd+'</span><br><small>※ 대략값(트림·연식에 따라 달라요). 화면에는 캐릭터와 어울리게 '+CDS+'배 크게 그렸어요.'+(PG.sum[k]?'<br>지난 기록: '+PG.sum[k]:'')+'</small>';
+    if(!R)return '<b>🚗 렌터카 · 테슬라 '+M.n+' ('+{s:'세단',y:'중형 SUV',x:'대형 SUV · 위로 열리는 팔콘 윙 뒷문',c:'전기 픽업트럭 · 스테인리스 강철 차체'}[M.t]+')</b>전기차는 배터리의 <b>전기에너지</b>로 모터를 돌려 <b>운동에너지</b>를 만들어요. 브레이크를 밟으면 모터가 거꾸로 발전기가 되어 운동에너지를 다시 전기로 바꿔요(<b>회생 제동</b>).<br><span class="plcoin">무게 약 '+fN(M.m,0)+' kg · 배터리 약 '+M.kwh+' kWh · 최고 출력 약 '+fN(M.P/1000,0)+' kW · 공기저항계수 Cd 약 '+M.cd+'</span><br><small>※ 대략값(트림·연식에 따라 달라요). 화면에는 캐릭터와 어울리게 '+CDS+'배 크게 그렸어요.'+(PG.sum[k]?'<br>지난 기록: '+PG.sum[k]:'')+'</small>';
     var v=R.v,mm=M.m+m,ke=0.5*mm*v*v,dh=(R.wh?R.wh[4]:exGround(R.s,R.o))-R.y0,pct=R.batt/(M.kwh*3.6e6)*100;
     return '<b>🚗 '+M.n+' 운전 중</b>속도 <b>'+fN(Math.abs(v)*3.6,0)+' km/h</b> · 배터리 <b>'+fN(pct,1)+'%</b> · 경사 '+fN(Math.atan(R.sl||0)*180/Math.PI,0)+'°<br><span class="plcoin">운동에너지 '+exE(ke)+' · 위치에너지 변화 '+exE(mm*EXG*dh)+' · 쓴 전기 '+fN(R.use/3.6e6,3)+' kWh · 회생 제동으로 되찾음 '+fN(R.regen/3.6e6,3)+' kWh</span><br><small>오르막에선 모터가 위치에너지까지 채워야 해서 전기를 많이 써요. 내리막에서 S(브레이크)를 살살 누르면 위치에너지가 다시 전기로! 빨라질수록 공기저항(∝ v²) 때문에 전기를 훨씬 많이 써요.</small>';}
   if(/^bal/.test(k)){
     if(!R)return '<b>🎈 열기구 승강장</b>버너로 풍선 안 공기를 데우면 공기가 팽창해 <b>밀도가 작아져요</b>. 바깥 차가운 공기보다 가벼워지면 <b>부력</b>(밀려나는 공기의 무게)이 열기구 무게보다 커져서 떠올라요.<br><span class="plcoin">풍선 부피 2,200 m³ · 버너 출력 약 3 MW · 연료 프로판</span><br><small>열기구는 방향을 직접 못 바꿔요. 높이마다 바람 방향이 달라서, <b>높이를 바꿔 원하는 바람을 타는 것</b>이 조종 방법이에요.'+(PG.sum[k]?'<br>지난 기록: '+PG.sum[k]:'')+'</small>';
-    return '<b>🎈 열기구 비행 '+(R.burn?'🔥 버너 켬':'')+'</b>땅 위 <b>'+fN(R.agl,0)+' m</b> · 오르내림 '+fN(R.vz,1)+' m/s · 바람 '+fN(R.ws,1)+' m/s<br><span class="plcoin">풍선 안 '+fN(R.Ti-273.15,0)+'°C · 바깥 '+fN(R.Tout-273.15,0)+'°C · 공기 밀도 안 '+fN(R.rin,3)+' / 밖 '+fN(R.rout,3)+' kg/m³<br>부력 '+fN(R.lift/1000,2)+' kN vs 무게 '+fN(R.Wt/1000,2)+' kN · 프로판 '+fN(R.fuel,1)+' kg = 화학에너지 '+exE(R.fuel*46e6)+' 사용</span><br><small>부력 = (바깥 공기 밀도 − 안 공기 밀도) × 부피 × g. 풍선 천은 약 120°C까지만 버텨서 그 이상 데울 수 없어요. 높이 올라갈수록 공기가 묽어져 같은 온도로는 덜 떠요. 착륙: Shift·S로 공기를 빼고 땅에 닿은 뒤 E.</small>';}
+    return '<b>🎈 열기구 비행 '+(R.burn?'🔥 버너 켬':'')+'</b>땅 위 <b>'+fN(R.agl,0)+' m</b> · 오르내림 '+fN(R.vz,1)+' m/s · 바람 '+fN(R.ws,1)+' m/s<br><span class="plcoin">풍선 안 '+fN(R.Ti-273.15,0)+'°C · 바깥 '+fN(R.Tout-273.15,0)+'°C · 공기 밀도 안 '+fN(R.rin,3)+' / 밖 '+fN(R.rout,3)+' kg/m³<br>부력 '+fN(R.lift/1000,2)+' kN vs 무게 '+fN(R.Wt/1000,2)+' kN · 프로판 '+fN(R.fuel,1)+' kg = 화학에너지 '+exE(R.fuel*46e6)+' 사용</span><br><small>부력 = (바깥 공기 밀도 − 안 공기 밀도) × 부피 × g. 풍선 천은 약 120°C까지만 버텨서 그 이상 데울 수 없어요. 높이 올라갈수록 공기가 묽어져 같은 온도로는 덜 떠요. 착륙: Shift(아래로 버튼)로 공기를 빼고 땅에 닿은 뒤 E. W/A/S/D(조이스틱)로 움직이는 프로펠러는 조종을 쉽게 하려고 넣은 게임용이에요(진짜 열기구는 바람을 타고 높이만 조절해요). 땅에서 120 m 넘게 올라가면 E로 낙하산을 메고 탈출할 수 있어요.</small>';}
   if(/^heli/.test(k)){
     var pd=(P5.helis||[])[+(k.slice(4)||0)]||P5.heli;
     if(!R)return '<b>🚁 헬기장 '+(pd?pd.i+1:1)+' · 헬기 조종 + 공수 강하</b>헬기를 직접 조종해 원하는 곳까지 날아가고, 땅에서 300 m 넘게 올라가면 뛰어내릴 수 있어요.<br><span class="plcoin">헬기가 떠 있으려면 로터가 공기를 아래로 밀어 내야 해요. 공기가 묽은 높은 곳일수록 같은 힘을 내는 데 동력이 더 들어서, 엔진 힘이 모자라는 높이(약 6,000 m)보다 높이는 못 올라가요.</span><br><small>스페이스 위로 · Shift 아래로 · W 앞 · S 감속 · A/D 방향 · F 빨리 감기. 강하: W 머리부터(빠르게) · S 팔다리 벌리기(느리게) · E 낙하산(지상 900 m에서는 자동으로 펴져요) · 착지 직전 스페이스 브레이크(플레어). 강가의 빨간 표적에 내려 보세요!'+(PG.sum[k]?'<br>지난 기록: '+PG.sum[k]:'')+'</small>';
@@ -4092,9 +4155,10 @@ function p5Text(k,R){
 }
 /* ---------- 매 프레임 그리기 ---------- */
 function p5Dyn(L,tm){
-  if(!P5.built)return;P5.tm=tm;var E=EX,R=E.ride,rk=R?R.k:'';
+  if(!P5.built)return;P5.tm=tm;
+  if(P5.lostBal){var lb=P5.lostBal;lb.t+=0.016;lb.y+=1.2*0.016*8;lb.s+=lb.vs*0.016/UM;lb.o=clamp(lb.o+lb.vo*0.016/UM,-41,41);p5BalDraw(L,lb.s,lb.o,lb.y,tm,false,0,0);if(lb.t>40)P5.lostBal=null;}   /* 사람이 빠져 가벼워진 열기구는 떠올라요 */if(typeof dcDyn==='function')dcDyn(L,tm);if(typeof likeDyn==='function')likeDyn(L,tm);var E=EX,R=E.ride,rk=R?R.k:'';
   if(R&&/^wt/.test(rk)&&R.tip){var tp=R.tip,ww=wpos(tp.s,tp.o,tp.y/UV);pbox(L,ww,[ww[0],ww[1]-0.12,ww[2]],0.01,0.01,[0.9,0.75,0.2]);}
-  (P5.horses||[]).forEach(function(q){if(rk==='horse'+q.i)return;p5HorseDraw(L,q.s,q.o,meshH(q.s,q.o)*UV,q.h,q.i,q.ph+Math.floor(tm*0.5)%2,0,0);});
+  (P5.horses||[]).forEach(function(q){if(rk==='horse'+q.i)return;p5HorseDraw(L,q.s,q.o,meshH(q.s,q.o)*UV,q.h,q.i,0,0,0);});
   if(R&&/^horse/.test(rk))p5HorseDraw(L,R.s,R.o,R.y+R.jz,R.h,R.ci,R.ph,R.v,R.pit);
   P5.cars.forEach(function(c){if(rk==='car'+c.i)return;var wq=wpos(c.s,c.o,0);if(Math.hypot(wq[0]-camPos[0],wq[2]-camPos[2])>40)return;if(!c.H)c.H=p5CarH(c.s,c.o,c.h,CARM[c.i]);p5CarDraw(L,c.s,c.o,c.h,CARM[c.i],0,c.H);});
   (P5.helis||[]).forEach(function(hp){if(R&&/^heli/.test(rk)&&R.pad===hp)return;var wq=wpos(hp.s,hp.o,0);if(Math.hypot(wq[0]-camPos[0],wq[2]-camPos[2])>60)return;p5HeliDraw(L,hp.s,hp.o,hp.gy+2.6,0.6,tm,0,0,0);});
@@ -4109,7 +4173,7 @@ function p5Dyn(L,tm){
 function p5DrawPeer(L,m,tm){
   var r=m.r;if(!r)return;var yM=m.cy;
   if(r==='para')p5WingDraw(L,m.cs,m.co,yM,m.ch,tm);
-  else if(r==='horse'){var hv=(m.rv%100)/5;m.hph=(m.hph||0)+hv*0.016/(1.6+hv*0.3)*12;p5HorseDraw(L,m.cs,m.co,meshH(m.cs,m.co)*UV,m.ch,Math.floor(m.rv/100)%4,m.hph,hv,0);}
+  else if(r==='horse'){var hv=(m.rv%100)/5;m.hph=(m.hph||0)+[0,0.9,1.4,1.7,2.1][p5Gait(hv)]*0.016;p5HorseDraw(L,m.cs,m.co,meshH(m.cs,m.co)*UV,m.ch,Math.floor(m.rv/100)%4,m.hph,hv,0);}
   else if(r==='car')p5CarDraw(L,m.cs,m.co,m.ch,CARM[clamp(m.rv|0,0,CARM.length-1)],0,null);
   else if(r==='bal')p5BalDraw(L,m.cs,m.co,yM-1,tm,m.rv===1,1,0);
   else if(r==='eagle')p5EagleDraw(L,m.cs,m.co,yM-8,m.ch,tm,false,EDS*1.3);
@@ -4120,6 +4184,16 @@ function p5RideCode(){var R=EX.ride;if(!R)return null;var k=R.k;
   if(k.indexOf('para')===0)return ['para',0];if(/^car/.test(k))return ['car',R.c?R.c.i:0];if(/^bal/.test(k))return ['bal',R.burn?1:0];if(k==='eagle')return ['eagle',0];if(/^horse/.test(k))return ['horse',R.ci*100+Math.round(R.v*5)];
   if(/^heli/.test(k))return (R.ph==='board'||R.ph==='fly')?['heli',0]:((R.ph==='open'||R.ph==='canopy')?['chute',0]:null);return null;}
 
+/* 열기구에서 탈출: 낙하산을 메고 뛰어내려요(헬기 강하와 같은 자유낙하 → 낙하산) */
+function p5BalBail(R){
+  var E=EX,ag=R.y-exGround(R.s,R.o);P5.lostBal={s:R.s,o:R.o,y:R.y,vs:R.vs||0,vo:R.vo||0,t:0};
+  var hp=(P5.helis&&P5.helis[0])||{s:R.s,o:R.o,gy:R.y};
+  var B={k:'heli',ph:'free',s:R.s,o:R.o,y:R.y,h:EX.yaw||0,vz:Math.min(0,R.vz||0),vf:0,ts:1,t:0,heat:0,y0:R.y,auto:0,hp:null,pad:hp,t0:R.t0||performance.now(),fromBal:true};
+  E.ride=B;E.hide=false;E.avs=1;E.pose=null;var ap=document.getElementById('app');if(ap)ap.classList.remove('heli');
+  if(ag<900){B.auto=1;p5Deploy(B,true);exMsg('🪂 열기구에서 탈출! 높이 '+fN(ag,0)+' m라서 낙하산이 바로 펴져요');}
+  else exMsg('🪂 열기구에서 탈출! 자유낙하 중 · E 낙하산 펴기 (지상 900 m에서는 자동으로 펴져요)');
+}
+
 /* ===== 말 보관소(마구간): 말을 빌려 타요 =====
    말 무게 약 500 kg · 걸음(약 1.7 m/s) → 빠른걸음(약 4 m/s) → 구보(약 7 m/s) → 질주(약 13 m/s, 47 km/h)
    근육은 먹이(화학에너지)의 약 25%만 일(운동·위치에너지)로 바꾸고 나머지는 열이 돼요. 화면에는 크게 그렸어요. */
@@ -4129,38 +4203,67 @@ var HRS=14,HORSES=[
  {n:'까망이',c:[0.14,0.13,0.14],m:[0.06,0.06,0.07],l:[0.1,0.1,0.11]},
  {n:'황금이',c:[0.88,0.68,0.36],m:[0.98,0.95,0.86],l:[0.88,0.68,0.36]}];
 var HORT={};
-function p5HorseTpl(ci,ph,spd){
-  var key=ci+'|'+ph+'|'+spd;if(HORT[key])return HORT[key];var T=p5Tpl(),R=p5Rec(T),H=HORSES[ci],C=[H.c[0]+4,H.c[1],H.c[2]],MN=[H.m[0]+4,H.m[1],H.m[2]],LG=[H.l[0]+4,H.l[1],H.l[2]],HF=[4.18,0.15,0.15];
-  function E(cx,cy,cz,rx,ry,rz,col,q){avEll(R,cx,cy,cz,rx,ry,rz,col,q?5:7,q?8:12);}
-  function seg(a,b,r,col){var d=[b[0]-a[0],b[1]-a[1],0],l=Math.hypot(d[0],d[1])||1e-3,ax=[d[0]/l,d[1]/l,0],ay=[-ax[1],ax[0],0];avEll(p5RecR(T,[(a[0]+b[0])/2,(a[1]+b[1])/2,a[2]],ax,ay,[0,0,1]),0,0,0,l/2+r*0.4,r,r,col,5,8);}
-  /* 몸통 · 가슴 · 엉덩이 */
-  E(0,1.25,0,0.82,0.36,0.3,C);E(0.58,1.22,0,0.38,0.37,0.3,C);E(-0.6,1.3,0,0.42,0.39,0.32,C);
-  /* 목 · 머리 */
-  [[0.82,1.45,0.22],[0.98,1.68,0.19],[1.1,1.88,0.16]].forEach(function(q){E(q[0],q[1],0,0.2,q[2],0.15,C,1);});
-  E(1.22,2.0,0,0.2,0.15,0.13,C);E(1.45,1.86,0,0.18,0.11,0.105,C);E(1.6,1.84,0,0.05,0.07,0.07,LG,1);
-  [-1,1].forEach(function(s){E(1.3,2.05,s*0.11,0.04,0.045,0.025,[0.06,0.05,0.05],1);E(1.315,2.06,s*0.125,0.012,0.014,0.008,[1,1,1],1);   /* 눈 */
-    avCone(R,1.14,2.12,s*0.07,0.04,0.03,0.17,-0.03,s*0.02,C,6);   /* 귀 */
-    E(1.62,1.86,s*0.05,0.015,0.015,0.01,[0.1,0.07,0.06],1);});   /* 콧구멍 */
-  for(var i=0;i<7;i++){var t=i/6;E(0.72+t*0.45,1.62+t*0.55,0,0.08,0.09,0.06,MN,1);}E(1.2,2.18,0.06,0.07,0.05,0.04,MN,1);   /* 갈기 · 앞머리 */
-  /* 꼬리(달리면 뒤로 날려요) */
-  var tl=0.3+spd*0.08;for(i=0;i<5;i++){E(-1.02-i*0.08*(0.6+tl),1.45-i*(0.22-tl*0.12),0,0.08,0.12,0.07,MN,1);}
-  /* 안장 · 등자 · 굴레 · 고삐 */
-  E(-0.05,1.6,0,0.36,0.08,0.34,[4.42,0.24,0.12]);E(-0.05,1.55,0,0.42,0.04,0.36,[4.7,0.12,0.12],1);
-  [-1,1].forEach(function(s){p5Box(T,-0.02,0.95,s*0.34,0.02,0.6,0.02,[0.25,0.15,0.08]);p5Box(T,-0.02,0.9,s*0.34,0.12,0.04,0.05,[0.7,0.7,0.72]);
-    p5Box(T,1.42,1.83,s*0.11,0.3,0.03,0.01,[0.25,0.15,0.08]);});
-  for(i=0;i<6;i++){var u=i/5;p5Box(T,1.45-u*1.3,1.82-Math.sin(u*Math.PI)*0.12+u*-0.05,0,0.24,0.025,0.22,[0.3,0.18,0.1]);}
-  /* 다리(걸음걸이에 따라 흔들어요) */
-  var ang=ph/12*Math.PI*2,amp=0.12+Math.min(0.45,spd*0.04),gal=spd>=8;
-  [[0.55,1,0],[0.55,-1,Math.PI],[-0.6,1,gal?0.6:Math.PI],[-0.6,-1,gal?0.6+Math.PI*0.4:0]].forEach(function(q){
-    var a=Math.sin(ang+q[2])*amp,bend=Math.max(0,Math.sin(ang+q[2]+1.2))*(0.35+amp),hip=[q[0],1.08,q[1]*0.19];
-    var kn=[hip[0]+Math.sin(a)*0.52,hip[1]-Math.cos(a)*0.52,hip[2]],b2=a-bend*(q[0]>0?1:-1),hf=[kn[0]+Math.sin(b2)*0.5,kn[1]-Math.cos(b2)*0.5,hip[2]];
-    seg(hip,kn,0.11,C);seg(kn,hf,0.06,LG);E(hf[0]+0.02,hf[1]-0.02,hf[2],0.075,0.05,0.07,HF,1);});
+/* 걸음걸이: 다리 순서(왼앞·오른앞·왼뒤·오른뒤가 언제 땅을 차는지)와 땅을 딛는 시간 비율이 달라요 */
+var GAITS=[
+ {n:'멈춤',o:[0,0,0,0],D:1,lift:0,bob:0},
+ {n:'걸음',o:[0.25,0.75,0,0.5],D:0.62,lift:0.13,bob:0.025},        /* 4박자: 왼뒤→왼앞→오른뒤→오른앞 */
+ {n:'빠른걸음',o:[0,0.5,0.5,0],D:0.45,lift:0.24,bob:0.06},          /* 2박자: 대각선 다리끼리 함께 */
+ {n:'구보',o:[0.62,0.32,0,0.32],D:0.4,lift:0.3,bob:0.09},           /* 3박자 */
+ {n:'질주',o:[0.55,0.65,0,0.1],D:0.3,lift:0.34,bob:0.12}];          /* 4박자 + 네 발이 모두 뜨는 순간 */
+function p5Gait(v){return v<0.3?0:(v<2.5?1:(v<5.5?2:(v<9?3:4)));}
+function p5HorseTpl(ci,gi,q,flip){
+  var key=ci+'|'+gi+'|'+q;if(HORT[key])return HORT[key];var T=p5Tpl(),R=p5Rec(T),H=HORSES[ci],G=GAITS[gi],ph=q/16;
+  function K(c,g){return [c[0]+(g?8:4),c[1],c[2]];}
+  var C=K(H.c,1),C2=K([H.c[0]*0.85,H.c[1]*0.85,H.c[2]*0.85],1),MN=K(H.m),LG=K(H.l),HF=[4.16,0.14,0.14],WH=[4.97,0.96,0.94],LE=[4.36,0.2,0.1];
+  /* 몸의 위아래 흔들림·앞뒤 기울기 */
+  var w2=Math.sin(ph*Math.PI*4),bobY=G.bob*w2,pit=gi>=3?0.05*Math.sin(ph*Math.PI*2):0,cp=Math.cos(pit),sp=Math.sin(pit);
+  function X(x,y){var dx=x,dy=y-1.25;return [dx*cp-dy*sp,1.25+dx*sp+dy*cp+bobY];}
+  function E(cx,cy,cz,rx,ry,rz,col,q2){var P=X(cx,cy);avEll(R,P[0],P[1],cz,rx,ry,rz,col,q2?5:7,q2?8:12);}
+  function segR(a,b,r1,col,a3){var d=[b[0]-a[0],b[1]-a[1]],l=Math.hypot(d[0],d[1])||1e-3,ax=[d[0]/l,d[1]/l,0],ay=[-ax[1],ax[0],0];avEll(p5RecR(T,[(a[0]+b[0])/2,(a[1]+b[1])/2,a3],ax,ay,[0,0,1]),0,0,0,l/2+r1*0.3,r1,r1*0.9,col,5,8);}
+  /* 몸통: 가슴 · 어깨 근육 · 배 · 엉덩이 · 허벅지 */
+  E(0,1.25,0,0.78,0.32,0.28,C);E(0.05,1.1,0,0.6,0.2,0.25,C2,1);E(0.55,1.24,0,0.36,0.38,0.28,C);E(0.46,1.55,0,0.26,0.12,0.15,C,1);
+  [-1,1].forEach(function(s){E(0.5,1.28,s*0.19,0.3,0.3,0.11,C,1);E(-0.66,1.18,s*0.2,0.32,0.33,0.12,C,1);});
+  E(-0.6,1.33,0,0.42,0.39,0.3,C);E(-0.52,1.6,0,0.32,0.1,0.24,C,1);
+  /* 목(활처럼 휜 목덜미) · 머리 */
+  var nb=gi===1?0.04*Math.sin(ph*Math.PI*4):0,hd=[1.3,2.06+nb];
+  var n0=X(0.6,1.4),n1=X(1.12,1.98+nb*0.5),n2=X(0.66,1.58),n3=X(1.08,2.08+nb*0.5);segR(n0,n1,0.2,C,0);segR(n2,n3,0.13,C,0);   /* 매끈한 목 + 목덜미 */
+  E(hd[0]-0.06,hd[1]-0.02,0,0.17,0.15,0.12,C);var m0=X(hd[0],hd[1]-0.04),m1=X(hd[0]+0.34,hd[1]-0.3);segR(m0,m1,0.1,C,0);
+  E(hd[0]+0.36,hd[1]-0.32,0,0.1,0.09,0.095,LG,1);E(hd[0]+0.4,hd[1]-0.37,0,0.07,0.04,0.07,[4.2,0.15,0.14],1);
+  if(ci===0||ci===3){var b0=X(hd[0]+0.08,hd[1]+0.05),b1=X(hd[0]+0.36,hd[1]-0.26);segR(b0,b1,0.035,WH,0);}   /* 이마의 흰 줄(블레이즈) */
+  [-1,1].forEach(function(s){E(hd[0]+0.06,hd[1]+0.02,s*0.105,0.04,0.04,0.025,[0.05,0.04,0.04],1);E(hd[0]+0.08,hd[1]+0.035,s*0.12,0.012,0.012,0.008,[1,1,1],1);
+    var ep=X(hd[0]-0.12,hd[1]+0.1);avCone(R,ep[0],ep[1],s*0.07,0.045,0.03,0.17,0.02,s*0.015,C,6);
+    E(hd[0]+0.42,hd[1]-0.33,s*0.05,0.015,0.02,0.012,[0.08,0.06,0.06],1);});
+  /* 갈기(달리면 뒤로 날려요) · 앞머리 */
+  var fly=Math.min(1,gi*0.3);for(var i=0;i<9;i++){var t=i/8,bx=0.62+t*0.55,by=1.62+t*0.48,fl=0.03*Math.sin(ph*Math.PI*6+i);E(bx-0.05*fly,by-0.06+fly*0.03+fl,0.07,0.07,0.1-fly*0.03,0.04,MN,1);}
+  E(hd[0]-0.02,hd[1]+0.12,0.02,0.07,0.06,0.05,MN,1);
+  /* 꼬리 */
+  var tlift=0.15+gi*0.12,tw=0.06*Math.sin(ph*Math.PI*2);for(i=0;i<7;i++){var u=i/6;E(-1.0-u*(0.18+tlift*0.35),1.55-u*(0.75-tlift*0.6),tw*u*(i%2?1:-1),0.07+u*0.03,0.1,0.06+u*0.02,MN,1);}
+  /* 안장 · 담요 · 뱃대끈 · 등자 · 굴레 · 고삐 */
+  E(-0.05,1.6,0,0.42,0.05,0.34,[4.2,0.3,0.6],1);E(-0.05,1.64,0,0.32,0.07,0.3,LE);E(0.22,1.7,0,0.06,0.07,0.14,LE,1);E(-0.3,1.72,0,0.07,0.08,0.18,LE,1);
+  [-1,1].forEach(function(s){var a1=X(-0.02,1.6),a2=X(-0.02,1.05);segR([a1[0],a1[1]],[a2[0],a2[1]],0.02,[4.3,0.2,0.1],s*0.3);
+    var st0=X(-0.03,1.6),st1=X(-0.03,1.02);segR(st0,st1,0.012,[0.25,0.15,0.08],s*0.33);E(st1[0],st1[1]-0.02,s*0.33,0.06,0.02,0.04,[8.7,0.7,0.72],1);
+    var c0=X(hd[0]+0.05,hd[1]),c1=X(hd[0]+0.3,hd[1]-0.3);segR(c0,c1,0.012,[0.2,0.12,0.07],s*0.11);});
+  var nz=X(hd[0]+0.3,hd[1]-0.28);E(nz[0]-0,nz[1]-bobY,0,0.03,0.025,0.11,[4.2,0.12,0.07],1);
+  var r0=X(hd[0]+0.32,hd[1]-0.32),r1=X(0.22,1.85);[-1,1].forEach(function(s){segR(r0,r1,0.01,[0.25,0.15,0.08],s*0.1);});
+  /* 다리: 걸음걸이 순서대로 발굽 위치를 정하고, 관절은 그 위치에 맞춰 굽혀요(역기구학) */
+  var stride=gi?[0,0.7,1.1,1.6,2.2][gi]:0;
+  [[0.5,1,1,0],[0.5,-1,1,1],[-0.62,1,-1,2],[-0.62,-1,-1,3]].forEach(function(q2){
+    var t=gi?((ph+G.o[q2[3]])%1):0,x0=q2[0]>0?0.55:-0.66,hx=x0,hy=0.07;
+    if(gi){if(t<G.D){hx=x0+stride*(0.5-t/G.D);}else{var u=(t-G.D)/(1-G.D);hx=x0+stride*(-0.5+u);hy=0.07+G.lift*Math.sin(Math.PI*u);}}
+    var hp=X(q2[0],q2[0]>0?1.12:1.18),z=q2[1]*0.17,a=q2[0]>0?0.58:0.62,b=0.62,dx=hx-hp[0],dy=hy-hp[1],d=Math.min(a+b-0.01,Math.hypot(dx,dy));
+    var ang=Math.atan2(dy,dx),ca=clamp((a*a+d*d-b*b)/(2*a*d),-1,1),th=Math.acos(ca)*q2[2],jx=hp[0]+Math.cos(ang+th)*a,jy=hp[1]+Math.sin(ang+th)*a;
+    var ft=[jx+Math.cos(Math.atan2(hy-jy,hx-jx))*b,jy+Math.sin(Math.atan2(hy-jy,hx-jx))*b];
+    var sock=(ci===0&&q2[3]>=2)||(ci===3&&q2[3]===0);
+    segR(hp,[jx,jy],q2[0]>0?0.085:0.1,C,z);E(jx,jy,z,0.06,0.06,0.055,C,1);
+    segR([jx,jy],ft,0.045,sock?WH:LG,z);E(ft[0],ft[1]+0.07,z,0.06,0.05,0.05,sock?WH:LG,1);
+    avEll(R,ft[0]+0.02,ft[1]-0.01,z,0.075,0.05,0.07,HF,5,8);});
   return HORT[key]=T;
 }
 function p5HorseH(s,o,h){var Ld=1.0*HRS/UM,c=Math.cos(h),sn=Math.sin(h);return [meshH(s+c*Ld,o+sn*Ld)*UV,meshH(s-c*Ld,o-sn*Ld)*UV,meshH(s,o)*UV];}
 function p5HorseDraw(L,s,o,yM,h,ci,ph,spd,pitch){
   var p=pgW(s,o,yM),wq=Math.hypot(p[0]-camPos[0],p[2]-camPos[2]);if(wq>60)return;
-  var F=p5Frame(p5Ry(s,o,h),pitch||0,0);p5Emit(L,p5HorseTpl(ci,((ph|0)%12+12)%12,Math.min(13,Math.round(spd||0))),p,F.f,F.u,F.sd,HRS/UM);
+  var gi=p5Gait(spd||0),q=gi?Math.floor(((ph%1)+1)%1*16):0;
+  var F=p5Frame(p5Ry(s,o,h),pitch||0,0);p5Emit(L,p5HorseTpl(ci,gi,q),p,F.f,F.u,F.sd,HRS/UM);
 }
 /* 마구간 짓기 */
 function p5HorseBuild(L){
@@ -4178,6 +4281,270 @@ function p5HorseBuild(L){
   [[-1.3,-0.2],[1.3,-0.25],[1.35,0.05]].forEach(function(q){pgLB(L,sh.s,sh.o,q[0],q[1],g,3,0.22,0.14,[0.95,0.82,0.4]);});   /* 건초 더미 */
   pgLB(L,sh.s,sh.o,-0.6,-0.3,g,2.5,0.5,0.1,[0.45,0.3,0.2]);pgLB(L,sh.s,sh.o,-0.6,-0.3,g+2.3,0.3,0.44,0.07,[0.35,0.6,0.85]);   /* 물통 */
   for(i=0;i<4;i++){var hs=sh.s-1.05+i*0.7,ho=sh.o+0.25;P5.horses.push({s:hs,o:ho,h:Math.PI/2,i:i,ph:i*3});}
+}
+
+/* ===== AI 데이터센터: 수력발전소에서 만든 전기로 AI 서버를 돌려요 =====
+   물의 위치에너지 → 운동에너지 → 발전기(전기에너지) → 송전선 → 데이터센터(계산) → 거의 전부 열 → 냉각
+   숫자는 어림값: AI 가속기(GPU) 1개 + 서버 몫 약 1.3 kW, 냉각 등 포함 전력 효율 PUE 약 1.2, AI 질문 1번 약 0.3 Wh(추정치마다 달라요) */
+var DC={};
+function dcBuild(L){
+  if(typeof PLT==='undefined'||!PLT.built||!PLT.sS)return;
+  var side=PLT.side,sS=PLT.sS,o0=-side*2.5;
+  function far(s,o){var ok=true;[P5.shop,P5.stable].forEach(function(z){if(z&&Math.hypot(z.s-s,z.o-o)<6)ok=false;});return ok;}
+  var q1=p5Site(sS-6,sS+16,14,28,3.2,function(s,o,sl){return sl*2+Math.abs(s-(sS+4))*0.1+(far(s,o)?0:1e6);}),q2=p5Site(sS-6,sS+16,-28,-14,3.2,function(s,o,sl){return sl*2+Math.abs(s-(sS+4))*0.1+(far(s,o)?0:1e6);});
+  var q=q1&&q2?(q1.sc<=q2.sc?q1:q2):(q1||q2);if(!q)return;
+  DC.s=q.s;DC.o=q.o;var g=pgGmax(q.s,q.o,1.5);DC.gy=g;
+  pgLB(L,q.s,q.o,0,0,g-25,25.5,3.2,2.2,[0.6,0.6,0.62]);                                   /* 부지 */
+  pgLB(L,q.s,q.o,0,0,g+0.5,22,2.6,1.4,[0.86,0.87,0.9]);                                    /* 서버동(길이 130 m) */
+  pgLB(L,q.s,q.o,0,0.71,g+3,15,2.4,0.02,[0.25,0.3,0.38]);pgLB(L,q.s,q.o,0,-0.71,g+3,15,2.4,0.02,[0.25,0.3,0.38]);   /* 검은 유리 띠 */
+  for(var i=0;i<8;i++)[-0.35,0.35].forEach(function(z){pgLB(L,q.s,q.o,-1.05+i*0.3,z,g+22.5,3,0.22,0.22,[0.55,0.57,0.6]);pgLB(L,q.s,q.o,-1.05+i*0.3,z,g+25.5,0.5,0.16,0.16,[0.15,0.16,0.18]);});   /* 지붕 냉각기 16대 */
+  pgLB(L,q.s,q.o,1.45,0,g+0.5,10,0.3,0.6,[0.35,0.55,0.8]);                                  /* 입구 */
+  [-0.6,0.6].forEach(function(z){pgLB(L,q.s,q.o,-1.55,z,g+0.5,8,0.35,0.35,[0.45,0.47,0.5]);});   /* 변압기 */
+  /* 발전소 변전소 → 데이터센터 송전선 */
+  var a=[sS,o0],b=[q.s-1.6,q.o],n=Math.max(2,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/5)),tops=[];
+  for(i=0;i<=n;i++){var t=i/n,ps=a[0]+(b[0]-a[0])*t,po=a[1]+(b[1]-a[1])*t,gg=exGround(ps,po);if(i>0&&i<n){pgLB(L,ps,po,0,0,gg,90,0.06,0.06,[0.5,0.52,0.56]);pgLB(L,ps,po,0,0,gg+86,3,0.05,0.7,[0.5,0.52,0.56]);}
+    tops.push([pgW(ps,po-0.3,gg+(i>0&&i<n?88:10)),pgW(ps,po+0.3,gg+(i>0&&i<n?88:10))]);}
+  for(i=0;i<tops.length-1;i++)[0,1].forEach(function(j){pbox(L,tops[i][j],tops[i+1][j],0.012,0.012,[0.15,0.15,0.17]);});
+}
+function dcPower(){var C=typeof plCalc==='function'?plCalc():{Pe:0};var Pe=C.Pe,it=Pe/1.2,gpu=it/1300,q=Pe/(0.3*3600);return {Pe:Pe,it:it,gpu:gpu,q:q,cool:Pe-it};}
+function dcDyn(L,tm){if(!DC.s)return;var c=pgW(DC.s,DC.o,DC.gy),dq=Math.hypot(c[0]-camPos[0],c[2]-camPos[2]);if(dq>60)return;
+  for(var i=0;i<24;i++){var x=-1.1+(i%12)*0.2,z=i<12?0.725:-0.725,on=Math.sin(tm*(3+i%5)+i*1.7)>0.2;   /* 깜빡이는 서버 불빛 */
+    if(on)pgLB(L,DC.s,DC.o,x,z,DC.gy+6+(i%3)*4,1.2,0.05,0.02,i%4?[0.3,1.6,2.4]:[0.4,2.4,0.8]);}
+  for(i=0;i<16;i++){var fx=-1.05+(i>>1)*0.3,fz=i%2?0.35:-0.35,an=tm*6+i;var p=pgW(DC.s,DC.o,DC.gy+26.1),f=frame(DC.s),ry=Math.atan2(f.tz,f.tx),cs=Math.cos(ry),sn=Math.sin(ry);
+    var cx=p[0]+fx*cs-fz*sn,cz=p[2]+fx*sn+fz*cs;obb(L,[cx,p[1],cz],[Math.cos(an),0,Math.sin(an)],[0,1,0],0.07,0.004,0.012,[0.2,0.2,0.22]);}   /* 도는 냉각 팬 */
+}
+/* 견학 코스 6곳: 카드의 [다음 ▶] [◀ 이전] 버튼(또는 W/S)으로 한 장씩 넘겨요 */
+var DCT=[
+ {t:'① 전기가 들어오는 곳 (변전실)',b:function(P){return '수력발전소에서 만든 전기 <b>'+fW(P.Pe)+'</b>가 송전선을 타고 와요. 멀리 보낼 땐 전압을 아주 높여(수십만 볼트) 전선에서 열로 새는 에너지를 줄이고, 여기 변압기에서 다시 낮춰 서버에 나눠 줘요.';}},
+ {t:'② 서버실: AI 가속기(GPU)',b:function(P){return '선반(랙)마다 AI 서버가 빼곡해요. 서버 속 핵심 칩은 미국 <b>엔비디아(NVIDIA)</b>가 설계한 AI 가속기(GPU)예요. 수천 개의 작은 계산기가 동시에 곱셈·덧셈을 해서 AI를 학습시키고 답을 만들어요. 이 데이터센터에선 약 <b>'+fN(P.gpu,0)+'개</b>를 돌릴 수 있어요(칩 1개가 약 0.7~1 kW).';}},
+ {t:'③ 칩을 만드는 곳: 대만 TSMC',b:function(){return '엔비디아는 칩을 설계만 하고, 실제로 만드는 건 대만의 <b>TSMC</b>예요. 머리카락 굵기의 수천분의 1 크기인 트랜지스터 수백억 개를 실리콘 웨이퍼에 새겨요. 아주 가는 회로를 그리는 EUV 노광 장비는 네덜란드 <b>ASML</b>이 만들어요. TSMC는 GPU 칩과 메모리를 한 판에 나란히 붙이는 첨단 포장(CoWoS)도 해요.';}},
+ {t:'④ GPU 옆의 메모리: 한국의 HBM',b:function(){return 'GPU 바로 옆에는 <b>HBM(고대역폭 메모리)</b>이 붙어 있어요. D램 칩을 아파트처럼 여러 층 쌓고 수천 개의 구멍(TSV)으로 연결해서, 엄청난 양의 데이터를 GPU에 빠르게 공급해요. HBM은 한국의 <b>SK하이닉스</b>와 <b>삼성전자</b>(그리고 미국 마이크론)가 만들어요. AI가 커질수록 계산만큼 메모리가 중요해져서, 한국 반도체가 AI의 핵심 부품이 됐어요.';}},
+ {t:'⑤ 뜨거운 열을 식히는 곳 (냉각)',b:function(P){return '칩이 계산에 쓴 전기에너지는 결국 거의 전부 <b>열</b>이 돼요(에너지 보존). 그래서 데이터센터는 물로 칩을 직접 식히는 수랭 장치와 지붕의 냉각기 16대로 열을 계속 내보내요. 냉각·조명 등에 드는 전기만 약 <b>'+fW(P.cool)+'</b>예요.';}},
+ {t:'⑥ 정리: 에너지 여행',b:function(P){return '물의 <b>위치에너지</b> → 떨어지며 <b>운동에너지</b> → 수차의 <b>회전 에너지</b> → 발전기의 <b>전기에너지</b> '+fW(P.Pe)+' → 칩의 <b>계산</b>(AI 질문 1초에 약 '+fN(P.q,0)+'번) → 마지막엔 <b>열</b>. 에너지는 사라지지 않고 모습만 바뀌어요! 발전소에서 물 흐름(유량)을 바꾸면 이 숫자들이 함께 바뀌어요.';}}];
+function dcText(R){var P=dcPower();
+  if(!R)return '<b>🖥️ AI 데이터센터</b>수력발전소 전기 <b>'+fW(P.Pe)+'</b>로 AI 가속기 약 <b>'+fN(P.gpu,0)+'개</b>를 돌리는 곳이에요. E를 누르면 견학을 시작해요(6곳 · 엔비디아 GPU · TSMC · 삼성전자·SK하이닉스 HBM · 냉각).<br><small>※ GPU 1개+서버 약 1.3 kW, PUE 약 1.2, 질문 1번 약 0.3 Wh는 어림값이에요(실제 값은 장비·계산마다 달라요).</small>';
+  var i=R.step|0,T=DCT[i];
+  return '<b>🖥️ AI 데이터센터 견학 '+(i+1)+'/'+DCT.length+' · '+T.t+'</b><div class="dcnav"><button type="button" data-dc="-1"'+(i===0?' disabled':'')+'>◀ 이전</button><span>'+(i+1)+' / '+DCT.length+'</span><button type="button" data-dc="1"'+(i===DCT.length-1?' disabled':'')+'>다음 ▶</button></div>'+T.b(P)+'<br><span class="plcoin">발전소 전기 '+fW(P.Pe)+' · AI 계산 '+fW(P.it)+' · GPU 약 '+fN(P.gpu,0)+'개 · 냉각 등 '+fW(P.cool)+'</span><small>W/S로도 넘길 수 있어요 · E 견학 끝 · ※ 숫자는 어림값이에요.</small>';}
+
+function dcGo(d){var R=EX.ride;if(!R||R.k!=='dc')return;var n=clamp((R.step|0)+d,0,DCT.length-1);if(n===R.step)return;R.step=n;EX.hudT=0;}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-dc]');if(!b)return;e.preventDefault();e.stopPropagation();dcGo(+b.getAttribute('data-dc'));},true);
+
+/* ===== 📱 좋아요 체험관: 내 휴대폰의 ♥ 한 번이 AI 데이터센터에 저장되고 다시 내 화면에 뜨기까지 =====
+   내 캐릭터가 '♥ 데이터 캡슐(패킷)'에 올라타서 실제 순서대로 날아가요.
+   휴대폰 화면 → 휴대폰 속(AP 칩 → 모뎀 → 안테나) → 전파 → 기지국 → 광케이블 → 통신사 교환국 → 인터넷 라우터
+   → 데이터센터 문(엣지 서버·로드밸런서) → 서버실 앱 서버 → 데이터베이스 → (알림) → 같은 길로 되돌아와 내 화면.
+   모든 모형은 '실제보다 아주 크게' 만든 거예요. 실제로는 0.1~0.3초 만에 끝나요.
+   (특정 회사의 실제 내부 구조가 아니라, 큰 서비스가 '보통' 쓰는 방식이에요) */
+var LKV={P:[],ready:false,cp:{}};
+function lkS(c){return [c[0]+4,c[1],c[2]];}   /* 매끈한 면(무늬 없음) */
+function lkG(c){return [c[0]+8,c[1],c[2]];}   /* 반짝이는 면(유리·광택) */
+var LKHEART=['.XX.XX.','XXXXXXX','XXXXXXX','.XXXXX.','..XXX..','...X...'];
+/* 픽셀 하트: 로컬 x=lx 평면에 lz(가로)·y(세로) 격자로 그려요 */
+function lkHeart(L,s,o,lx,lz0,y0,cz,cy,th,col){for(var r=0;r<6;r++)for(var c=0;c<7;c++)if(LKHEART[r][c]==='X')pgLB(L,s,o,lx,lz0+(c-3)*cz,y0+(5-r)*cy,cy,th,cz,col);}
+function lkRing(L,w,r,th,col,n){n=n||12;for(var k=0;k<n;k++){var a=k*2*Math.PI/n,a2=(k+0.5)*2*Math.PI/n;obb(L,[w[0]+Math.cos(a2)*r,w[1],w[2]+Math.sin(a2)*r],[-Math.sin(a2),0,Math.cos(a2)],[0,1,0],r*Math.PI/n,th,th,col);}}
+function lkAxes(s,o){var a=pgLW(s,o,0,0,0),b=pgLW(s,o,1,0,0),c=pgLW(s,o,0,1,0);return {x:[b[0]-a[0],0,b[2]-a[2]],z:[c[0]-a[0],0,c[2]-a[2]]};}
+function likeBuild(L){
+  if(typeof DC==='undefined'||!DC.s)return;
+  var q=p5Site(DC.s-13,DC.s-6,DC.o>0?5:-22,DC.o>0?22:-5,2.4,function(s,o,sl){var d=Math.hypot(s-DC.s,o-DC.o),sh=P5.shop?Math.hypot(s-P5.shop.s,o-P5.shop.o):9;return sl*2+Math.abs(d-9)*0.3+(sh<3?1e6:0);});if(!q)return;
+  var g=pgGmax(q.s,q.o,0.6);LKV.s=q.s;LKV.o=q.o;LKV.gy=g;
+  var sg=LKV.o>0?-1:1;LKV.so=LKV.o+sg*0.6;   /* 체험관 입구(정류장) 쪽 */
+  /* ── ① 거대한 휴대폰(높이 약 46 m, 실제의 약 300배) ── */
+  pgLB(L,q.s,q.o,0,0,g-4,6,0.34,0.7,lkS([0.86,0.86,0.9]));                       /* 받침대 */
+  pgLB(L,q.s,q.o,-0.05,0,g+2,8,0.09,0.2,lkS([0.75,0.76,0.8]));
+  pgLB(L,q.s,q.o,0,0,g+2,46,0.06,0.5,lkG([0.07,0.07,0.09]));                     /* 몸체(검은 유리) */
+  pgLB(L,q.s,q.o,0,0.252,g+2.5,45,0.062,0.006,lkG([0.62,0.64,0.7]));pgLB(L,q.s,q.o,0,-0.252,g+2.5,45,0.062,0.006,lkG([0.62,0.64,0.7]));   /* 금속 테 */
+  pgLB(L,q.s,q.o,0,0.258,g+34,5,0.02,0.006,lkS([0.5,0.5,0.55]));pgLB(L,q.s,q.o,0,-0.258,g+36,3,0.02,0.006,lkS([0.5,0.5,0.55]));pgLB(L,q.s,q.o,0,-0.258,g+31,3,0.02,0.006,lkS([0.5,0.5,0.55]));   /* 옆 버튼 */
+  pgLB(L,q.s,q.o,-0.035,0.13,g+38,6,0.012,0.14,lkG([0.12,0.12,0.14]));[[0.1,41],[0.16,41],[0.1,37.5],[0.16,37.5]].forEach(function(c){pgLB(L,q.s,q.o,-0.042,c[0],g+c[1],2.4,0.008,0.045,lkG([0.02,0.03,0.08]));});   /* 뒷면 카메라 */
+  /* 화면(앞 = +s 쪽): 흰 바탕 · 위 상태줄 · 앱 머리줄 · 프로필 · 사진(이 공원 산!) · 버튼줄 · 글줄 */
+  var X=0.0315,S=function(lz,y,h,w,col,dx){pgLB(L,q.s,q.o,X+(dx||0),-lz,g+y,h,0.003,w,col);};   /* 화면 앞에서 볼 때 lz<0 이 왼쪽 */
+  S(0,4.5,41,0.46,lkS([1.25,1.25,1.25]));
+  S(0,44,1.3,0.46,lkS([0.1,0.1,0.12]),0.001);S(0.13,38,0.3,0.002,lkS([0.1,0.1,0.12]),0.001);
+  S(0,40.5,3,0.44,lkS([1.1,1.1,1.12]),0.001);S(-0.1,41.3,1.4,0.2,lkS([0.15,0.15,0.18]),0.002);S(0.17,41,2,0.04,lkS([0.15,0.15,0.18]),0.002);
+  S(-0.19,36.2,2.6,0.05,lkS([1.6,0.5,0.9]),0.002);S(-0.09,37,1.0,0.12,lkS([0.2,0.2,0.24]),0.002);   /* 프로필 동그라미·이름 */
+  S(0,17,18.5,0.44,lkS([0.55,0.8,1.25]),0.001);                                   /* 사진: 하늘 */
+  [[-0.16,0.1,6],[-0.06,0.14,10],[0.06,0.12,8],[0.17,0.1,5]].forEach(function(m){for(var k=0;k<5;k++){var w=m[1]*(1-k/5),h=m[2]/5;S(m[0],17+k*h,h,w,lkS(k>=3?[1.2,1.2,1.25]:[0.35,0.55,0.4]),0.002);}});   /* 산 */
+  S(0,17,2.2,0.44,lkS([0.3,0.6,0.3]),0.003);
+  S(-0.04,11.6,4.4,0.05,lkS([0.25,0.25,0.3]),0.002);S(0.04,11.6,4.4,0.05,lkS([0.25,0.25,0.3]),0.002);S(0.17,11.6,4.4,0.04,lkS([0.25,0.25,0.3]),0.002);   /* 댓글·보내기·저장 아이콘 */
+  S(-0.11,6.2,1,0.2,lkS([0.3,0.3,0.34]),0.002);S(-0.05,5,0.8,0.32,lkS([0.6,0.6,0.64]),0.002);
+  LKV.hz=0.16;LKV.hy=10.4;   /* ♥ 버튼 위치(화면 왼쪽 아래 — 앱들이 보통 두는 자리) */
+  /* ── 체험관 건물(입구) ── */
+  var so=LKV.so,gp=pgGmax(q.s,so,0.25);LKV.gp=gp;
+  pgLB(L,q.s,so,0,0,gp-3,3.6,0.42,0.42,lkS([0.95,0.92,0.95]));
+  [[-0.18,-0.18],[0.18,-0.18],[-0.18,0.18],[0.18,0.18]].forEach(function(c){pgLB(L,q.s,so,c[0],c[1],gp+0.6,9,0.035,0.035,lkS([1.0,0.45,0.65]));});
+  pgLB(L,q.s,so,0,0,gp+9.6,1.4,0.46,0.46,lkG([0.95,0.95,0.98]));pgLB(L,q.s,so,0,0,gp+11,0.6,0.4,0.4,lkS([1.0,0.45,0.65]));
+  lkHeart(L,q.s,so,0,0,gp+11.6,0.03,1.5,0.02,[2.6,0.35,0.6]);   /* 지붕 위 큰 ♥ 간판 */
+  pgLB(L,q.s,so,-0.1,0,gp+0.6,3.2,0.12,0.012,lkS([0.25,0.3,0.45]));pgLB(L,q.s,so,-0.1,0,gp+3.8,2.4,0.12,0.012,lkS([0.6,1.4,2.2]));   /* 안내 화면 */
+  for(var k=1;k<6;k++){var ts=q.s+0.12*k/6,to=so+(q.o-so)*k/6;pgLB(L,ts,to,0,0,exGround(ts,to)-0.6,0.9,0.08,0.08,lkS([1.0,0.5,0.7]));}   /* 분홍 길 */
+  /* ── 휴대폰 속 들여다보기: 거대한 회로 기판(실제의 약 600배) ── */
+  var B={s:q.s+0.25,o:q.o-sg*0.95};B.g=pgGmax(B.s,B.o,0.45);LKV.B=B;var by=B.g+6;
+  pgLB(L,B.s,B.o,0,0,B.g-8,14,0.92,0.6,lkS([0.32,0.33,0.36]));
+  pgLB(L,B.s,B.o,0,0,by,1.2,0.86,0.54,lkS([0.08,0.45,0.25]));                     /* 초록 기판 */
+  for(k=0;k<9;k++)pgLB(L,B.s,B.o,-0.4+k*0.1,0,by+1.2,0.15,0.006,0.5,lkS([0.9,0.7,0.3]));   /* 금 배선 */
+  for(k=0;k<6;k++)pgLB(L,B.s,B.o,0,-0.25+k*0.1,by+1.2,0.15,0.84,0.006,lkS([0.9,0.7,0.3]));
+  var C=LKV.chip={ap:[-0.22,0.05],ram:[-0.22,-0.15],modem:[0.12,0.08],bat:[0.05,-0.15],ant:[0.39,0.0]};
+  pgLB(L,B.s,B.o,C.ap[0],C.ap[1],by+1.2,2.6,0.2,0.2,lkG([0.18,0.18,0.2]));pgLB(L,B.s,B.o,C.ap[0],C.ap[1],by+3.8,0.3,0.14,0.14,lkG([0.6,0.6,0.65]));   /* AP(두뇌) */
+  pgLB(L,B.s,B.o,C.ram[0],C.ram[1],by+1.2,1.8,0.16,0.09,lkG([0.12,0.12,0.14]));    /* 메모리 */
+  pgLB(L,B.s,B.o,C.modem[0],C.modem[1],by+1.2,2.2,0.15,0.14,lkG([0.2,0.2,0.24]));pgLB(L,B.s,B.o,C.modem[0],C.modem[1],by+3.4,0.3,0.1,0.09,lkS([0.75,0.6,0.25]));   /* 모뎀 */
+  pgLB(L,B.s,B.o,C.bat[0],C.bat[1],by+1.2,3,0.36,0.16,lkG([0.7,0.72,0.76]));      /* 배터리 */
+  pgLB(L,B.s,B.o,C.ant[0],C.ant[1],by+1.2,1.2,0.03,0.5,lkG([1.0,0.78,0.3]));pgLB(L,B.s,B.o,C.ant[0],C.ant[1],by+2.4,6,0.03,0.03,lkG([1.0,0.78,0.3]));   /* 안테나 */
+  pgLB(L,B.s,B.o,0.06,0.05,by+1.2,0.4,0.24,0.006,lkS([1.0,0.78,0.3]));            /* AP→모뎀 선 */
+  /* ── 경로 꼭짓점 ── */
+  var P=[],cp=LKV.cp;function add(s,o,y,tag){P.push({s:s,o:o,y:y});if(tag)cp[tag]=P.length-1;}
+  function run(a,b,n,h){for(var i=1;i<=n;i++){var t=i/n,s=a[0]+(b[0]-a[0])*t,o=a[1]+(b[1]-a[1])*t;add(s,o,pgGmax(s,o,0.3)+h);}}
+  add(q.s+0.75,q.o-0.3,g+LKV.hy+9,'phone');   /* 화면 오른쪽 앞: ♥ 버튼이 가려지지 않게 */add(q.s+0.55,(q.o+B.o)/2,g+20);
+  add(B.s+C.ap[0],B.o+C.ap[1],by+11,'ap');add(B.s+C.modem[0],B.o+C.modem[1],by+10,'modem');add(B.s+C.ant[0],B.o+C.ant[1],by+16,'ant');
+  /* ── ② 기지국 탑(높이 약 40 m 모형) ── */
+  var dirS=DC.s-q.s,dirO=DC.o-q.o,dl=Math.hypot(dirS,dirO);dirS/=dl;dirO/=dl;var px=-dirO,po=dirS;
+  var T={s:q.s+dirS*2.0+px*1.2,o:q.o+dirO*2.0+po*1.2};T.g=exGround(T.s,T.o);LKV.T=T;var HT=130;LKV.HT=HT;
+  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(c){pbox(L,pgW(T.s+c[0]*0.12,T.o+c[1]*0.12,T.g),pgW(T.s+c[0]*0.03,T.o+c[1]*0.03,T.g+HT),0.012,0.012,[0.75,0.75,0.78]);});
+  for(var i=1;i<8;i++){var yy=T.g+i*HT/8,w=0.12-0.09*i/8;pbox(L,pgW(T.s-w,T.o-w,yy),pgW(T.s+w,T.o+w,yy),0.008,0.008,[0.75,0.75,0.78]);pbox(L,pgW(T.s+w,T.o-w,yy),pgW(T.s-w,T.o+w,yy),0.008,0.008,[0.75,0.75,0.78]);}
+  [0,1,2].forEach(function(k){var a=k*2.094;pgLB(L,T.s+Math.cos(a)*0.06,T.o+Math.sin(a)*0.06,0,0,T.g+HT-18,16,0.05,0.025,lkS([0.95,0.95,0.96]));pgLB(L,T.s+Math.cos(a)*0.06,T.o+Math.sin(a)*0.06,0,0,T.g+HT-34,8,0.03,0.02,lkS([0.85,0.85,0.88]));});
+  pgLB(L,T.s+0.22,T.o,0,0,T.g-2,9,0.16,0.12,lkS([0.85,0.86,0.82]));            /* 장비함(기지국 컴퓨터·배터리) */
+  pbox(L,pgW(T.s+0.15,T.o,T.g+5),pgW(T.s+0.03,T.o,T.g+20),0.01,0.01,[0.15,0.15,0.16]);
+  add(T.s,T.o,T.g+HT-6,'tower');add(T.s+0.15,T.o,T.g+14);add(T.s+0.3,T.o,T.g+6);
+  /* ── ③ 통신사 교환국 ── */
+  var Xo={s:q.s+dirS*dl*0.45-px*0.6,o:q.o+dirO*dl*0.45-po*0.6};Xo.g=pgGmax(Xo.s,Xo.o,0.5);LKV.X=Xo;
+  pgLB(L,Xo.s,Xo.o,0,0,Xo.g-6,26,0.9,0.7,lkS([0.84,0.86,0.9]));
+  for(k=0;k<4;k++){pgLB(L,Xo.s,Xo.o,0.451,0,Xo.g+2+k*4.5,1.6,0.004,0.62,lkG([0.35,0.6,0.95]));pgLB(L,Xo.s,Xo.o,-0.451,0,Xo.g+2+k*4.5,1.6,0.004,0.62,lkG([0.35,0.6,0.95]));}   /* 창문 띠 */
+  pgLB(L,Xo.s,Xo.o,0,0,Xo.g+20,1,0.95,0.75,lkS([0.25,0.5,0.85]));
+  [[-0.25,-0.2],[-0.25,0.05],[0.2,0.2]].forEach(function(c){pgLB(L,Xo.s,Xo.o,c[0],c[1],Xo.g+21,2.4,0.14,0.14,lkS([0.75,0.76,0.78]));});   /* 냉방기 */
+  pgLB(L,Xo.s,Xo.o,0.2,-0.2,Xo.g+21,14,0.012,0.012,lkS([0.8,0.8,0.82]));
+  run([T.s+0.3,T.o],[Xo.s,Xo.o],7,26);add(Xo.s,Xo.o,Xo.g+30,'office');
+  /* ── ④ 인터넷 라우터(장비함 3개) ── */
+  var Rr={s:q.s+dirS*dl*0.72+px*0.5,o:q.o+dirO*dl*0.72+po*0.5};Rr.g=pgGmax(Rr.s,Rr.o,0.3);LKV.R=Rr;
+  [-0.14,0,0.14].forEach(function(z){pgLB(L,Rr.s,Rr.o,0,z,Rr.g-2,13,0.16,0.11,lkS([0.24,0.26,0.3]));});
+  pgLB(L,Rr.s,Rr.o,0,0,Rr.g-2,0.6,0.5,0.5,lkS([0.6,0.6,0.62]));
+  run([Xo.s,Xo.o],[Rr.s,Rr.o],6,32);add(Rr.s,Rr.o,Rr.g+22,'router');
+  /* ── ⑤ 데이터센터 문: 엣지 서버·로드밸런서 ── */
+  var Gt={s:DC.s-2.1,o:DC.o};   /* 휴대폰 쪽에서 오는 길목(건물 앞) */Gt.g=exGround(Gt.s,Gt.o);LKV.G=Gt;
+  [-0.35,0.35].forEach(function(z){pgLB(L,Gt.s,Gt.o,0,z,Gt.g,40,0.12,0.08,lkS([0.88,0.9,0.95]));for(var k=0;k<6;k++)[0.061,-0.061].forEach(function(x){pgLB(L,Gt.s,Gt.o,x,z,Gt.g+5+k*5.5,0.6,0.003,0.05,[0.3,1.6,2.4]);});});
+  pgLB(L,Gt.s,Gt.o,0,0,Gt.g+38,6,0.14,0.8,lkS([0.88,0.9,0.95]));[0.071,-0.071].forEach(function(x){pgLB(L,Gt.s,Gt.o,x,0,Gt.g+39,4,0.003,0.5,[0.4,1.3,2.4]);});
+  run([Rr.s,Rr.o],[Gt.s-0.9,Gt.o],5,36);add(Gt.s-0.45,Gt.o,Gt.g+24);add(Gt.s,Gt.o,Gt.g+20,'gate');   /* 문 정면으로 곧게 들어가요 */
+  /* ── ⑥ 서버실(지붕을 뗀 홀) ── */
+  var H={s:DC.s,o:DC.o+(DC.o>q.o?-1.55:1.55)};H.g=pgGmax(H.s,H.o,0.9);LKV.H=H;
+  pgLB(L,H.s,H.o,0,0,H.g-15,15.3,2.4,1.0,lkS([0.62,0.64,0.68]));
+  for(k=0;k<6;k++)pgLB(L,H.s,H.o,-1.0+k*0.4,0,H.g+0.3,0.05,0.004,0.96,lkS([0.45,0.47,0.5]));   /* 바닥 타일 줄 */
+  [[0,0.5],[0,-0.5]].forEach(function(w){pgLB(L,H.s,H.o,w[0],w[1],H.g,3,2.4,0.04,lkS([0.82,0.84,0.88]));});[-1.2,1.2].forEach(function(x){pgLB(L,H.s,H.o,x,0,H.g,3,0.04,1.0,lkS([0.82,0.84,0.88]));});
+  LKV.racks=[];for(var r=0;r<4;r++)for(var c=0;c<7;c++){var rx=-0.9+c*0.3,rz=-0.33+r*0.22;pgLB(L,H.s,H.o,rx,rz,H.g+0.3,11,0.2,0.08,lkG([0.1,0.11,0.13]));LKV.racks.push([rx,rz]);}
+  for(r=0;r<4;r++)pgLB(L,H.s,H.o,0,-0.33+r*0.22,H.g+13,0.5,2.0,0.03,lkS([1.0,0.8,0.2]));   /* 머리 위 케이블 길(노랑) */
+  [-0.11,0.33].forEach(function(z){pgLB(L,H.s,H.o,0,z,H.g+0.35,0.1,2.0,0.11,lkS([0.4,0.7,1.1]));});   /* 찬 공기 통로(파랑) */
+  [-0.95,-0.55].forEach(function(x){pgLB(L,H.s,H.o,x,0.45,H.g,6,0.25,0.06,lkS([0.92,0.93,0.95]));});   /* 냉각기 */
+  LKV.app=[0.0,-0.11];pgLB(L,H.s,H.o,0.0,-0.11,H.g+11.3,0.8,0.22,0.1,lkS([1,0.8,0.2]));
+  LKV.dbs=[[0.9,0.25],[0.9,0.03],[0.9,-0.19]];LKV.dbs.forEach(function(d){pgLB(L,H.s,H.o,d[0],d[1],H.g+11.3,0.8,0.22,0.1,lkS([0.3,0.9,0.5]));});
+  add(H.s-1.5,H.o,H.g+18);add(H.s-0.6,H.o-0.11,H.g+20);add(H.s,H.o-0.11,H.g+17,'app');
+  add(H.s+0.45,H.o+0.03,H.g+21);add(H.s+0.9,H.o+0.03,H.g+17,'db');
+  /* 땅속 광케이블 표시(주황 기둥) */
+  for(i=cp.tower+2;i<cp.gate;i++){var a2=P[i];pgLB(L,a2.s,a2.o,0,0,exGround(a2.s,a2.o)-0.5,1.2,0.035,0.035,lkS([1,0.55,0.1]));}
+  /* 하늘에 그린 '데이터가 다니는 길' 점선: 분홍=휴대폰 속 · 파랑=전파 · 주황=광케이블 · 초록=데이터센터 안 */
+  for(i=0;i<P.length-1;i++){var A=P[i],Bq=P[i+1],len=Math.hypot(Bq.s-A.s,Bq.o-A.o,(Bq.y-A.y)/UM),n=Math.max(1,Math.round(len/0.09));
+    var col=i<cp.ant?[2.2,0.5,1.0]:(i<cp.tower?[0.5,1.3,2.6]:(i<cp.gate?[2.4,1.3,0.3]:[0.4,2.2,0.8]));
+    for(k=0;k<n;k++){var t=(k+0.5)/n;obb(L,pgW(A.s+(Bq.s-A.s)*t,A.o+(Bq.o-A.o)*t,A.y+(Bq.y-A.y)*t-7),[1,0,0],[0,1,0],0.007,0.007,0.007,col);}}
+  /* 멈추는 곳마다 금색 고리(정거장) */
+  ['phone','ap','ant','tower','office','router','gate','app','db'].forEach(function(t){var p=P[cp[t]];lkRing(L,pgW(p.s,p.o,p.y-9),0.07,0.004,[2.4,1.9,0.4],14);});
+  LKV.P=P;LKV.ready=true;
+}
+function likeAt(i0,i1,u){var P=LKV.P,dir=i1>=i0?1:-1,n=Math.abs(i1-i0);if(!n)return P[i0];var f=u*n,k=Math.min(n-1,Math.floor(f)),t=f-k,a=P[i0+dir*k],b=P[i0+dir*(k+1)]||a;return {s:a.s+(b.s-a.s)*t,o:a.o+(b.o-a.o)*t,y:a.y+(b.y-a.y)*t};}
+function likeLen(a,b){var P=LKV.P,L=0,d=b>=a?1:-1;for(var i=a;i!==b;i+=d)L+=Math.hypot((P[i+d].s-P[i].s)*UM,(P[i+d].o-P[i].o)*UM,P[i+d].y-P[i].y);return L;}
+/* 14단계: seg = [출발, 도착] — 이 단계로 넘어갈 때 그 구간을 날아가요. ms = 이 단계에 걸리는 실제 시간(어림) */
+var LKS=[
+ {t:'♥ 누르기',at:'phone',seg:null,ms:8,b:'거대한 휴대폰 앞이에요! 화면 속에는 아주 가는 전기 줄(파란 격자)이 깔려 있어요. 손가락이 닿으면 그 자리 전기가 살짝 달라져서 휴대폰이 <b>"♥를 눌렀네!"</b> 하고 알아채요.'},
+ {t:'바로 빨간 ♥',at:'phone',seg:null,ms:16,b:'휴대폰은 기다리지 않고 ♥를 <b>먼저 빨갛게</b> 바꿔요. 그런데 아직 저장된 건 아니에요! 진짜 저장은 멀리 있는 <b>데이터센터</b>에서 해요.'},
+ {t:'휴대폰의 두뇌, AP 칩',at:'ap',seg:['phone','ap'],ms:3,b:'휴대폰 속을 아주 크게 키웠어요. 두뇌 칩(<b>AP</b>)이 "이 게시물에 좋아요!"라는 짧은 <b>쪽지</b>를 만들고, 아무도 못 읽게 <b>암호로 잠가요</b>. 이 쪽지가 내가 탄 ♥ 캡슐이에요.'},
+ {t:'안테나에서 전파로 출발',at:'ant',seg:['ap','ant'],ms:2,b:'모뎀 칩이 쪽지를 전파에 싣고, 금색 <b>안테나</b>가 <b>전파</b>를 쏘아요. 전파는 눈에 안 보이지만 1초에 지구를 <b>7바퀴 반</b> 도는 빠르기예요!'},
+ {t:'기지국 도착',at:'tower',seg:['ant','tower'],ms:10,b:'전파를 받아 주는 큰 안테나 탑, <b>기지국</b>이에요. 동네마다 있어요. 집에서는 <b>와이파이 공유기</b>가 이 일을 해요.'},
+ {t:'빛이 되어 광케이블로',at:'office',seg:['tower','office'],ms:5,b:'여기부터는 땅속 <b>광케이블</b>(주황 표시)이에요. 쪽지가 <b>빛의 반짝임</b>으로 바뀌어 가는 유리 줄 속을 달려요. 통신사 건물이 인터넷으로 내보내 줘요.'},
+ {t:'라우터: 인터넷 길 안내',at:'router',seg:['office','router'],ms:20,b:'인터넷에는 갈림길이 아주 많아요. <b>라우터</b>는 쪽지 겉의 <b>주소</b>만 보고 "데이터센터는 이쪽!" 하고 길을 알려 줘요. 내비게이션 같아요.'},
+ {t:'데이터센터 문',at:'gate',seg:['router','gate'],ms:3,b:'AI 데이터센터 도착! <b>문지기 컴퓨터</b>가 잠긴 쪽지를 열고 "진짜 이 사람 맞나?" 확인해요. 그리고 <b>안 바쁜 컴퓨터</b>에게 보내 줘요.'},
+ {t:'서버가 확인해요',at:'app',seg:['gate','app'],ms:8,b:'컴퓨터(<b>서버</b>)가 가득한 방이에요. 노란 서버가 "게시물 있나? 두 번 누른 건 아니지?" 확인해요. 이 컴퓨터들은 <b>수력발전소 전기</b>로 움직여요.'},
+ {t:'저장! 그리고 복사',at:'db',seg:['app','db'],ms:12,b:'초록 서버에 "나 → 게시물 ♥"를 <b>저장</b>해요. 고장 나도 잃어버리지 않게 다른 서버에도 <b>똑같이 복사</b>해 둬요. 캡슐이 3개로 나뉘는 게 보이죠?'},
+ {t:'주인에게 알림',at:'db',seg:null,ms:0,b:'게시물 주인 휴대폰에는 <b>"누가 좋아요를 눌렀어요!"</b> 알림이 따로 날아가요. 하늘로 올라가는 노란 빛이에요.'},
+ {t:'"OK!" 답장 들고 돌아가기',at:'phone',seg:['db','phone'],ms:45,b:'서버가 <b>"저장 완료! 좋아요 1,025개"</b> 답장을 보내요. 이번엔 <b>초록 캡슐</b>이 되어 왔던 길을 거꾸로 돌아가요.'},
+ {t:'♥ 확정!',at:'phone',seg:null,ms:5,b:'답장이 도착했어요! 이제 <b>진짜로 저장된</b> 좋아요예요 ✓. 친구 휴대폰의 숫자는 조금 뒤에 바뀌어요.'},
+ {t:'정리',at:'phone',seg:null,ms:0,b:'먼 길이었죠? 그런데 진짜로는 <b>눈 한 번 깜빡할 시간</b>(약 0.1~0.3초)이면 끝나요! <b>전기 → 전파 → 빛 → 전기</b>로 모양을 바꾸며 여행했어요.'}];
+function likeCp(t){return typeof t==='string'?LKV.cp[t]:t;}
+function likeGo(d){var R=EX.ride;if(!R||R.k!=='like'||R.mv)return;var n=clamp(R.st+d,0,LKS.length-1);if(n===R.st)return;
+  var sg=d>0?LKS[n].seg:null;
+  if(sg){var a=likeCp(sg[0]),b=likeCp(sg[1]);R.mv={a:a,b:b,u:0,dur:clamp(likeLen(a,b)/90,4,12),to:n};exMsg('🚀 '+LKS[n].t.replace(/^[^ ]+ /,'')+' — 출발!');}
+  else{R.st=n;var p=LKV.P[likeCp(LKS[n].at)];R.pk={s:p.s,o:p.o,y:p.y};}
+  R.stT=0;EX.hudT=0;}
+function likeRestart(){var R=EX.ride;if(!R||R.k!=='like')return;R.st=0;R.mv=null;R.stT=0;var p=LKV.P[LKV.cp.phone];R.pk={s:p.s,o:p.o,y:p.y};EX.hudT=0;}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-lk]');if(!b)return;e.preventDefault();e.stopPropagation();var a=b.getAttribute('data-lk');if(a==='r')likeRestart();else likeGo(+a);},true);
+function likeStep(R,dt,fw){
+  var nx=(fw>0.5&&!R.fwH)?1:((fw<-0.5&&!R.fwH)?-1:0);R.fwH=Math.abs(fw)>0.5;if(nx)likeGo(nx);
+  R.stT=(R.stT||0)+dt;var prev=R.pk;
+  if(R.mv){R.mv.u+=dt/R.mv.dur;var u=Math.min(1,R.mv.u),e2=u<0.5?2*u*u:1-Math.pow(-2*u+2,2)/2;R.pk=likeAt(R.mv.a,R.mv.b,e2);
+    if(R.mv.u>=1){R.st=R.mv.to;R.mv=null;R.stT=0;EX.hudT=0;exMsg('📍 도착: '+LKS[R.st].t);}}
+  var p=R.pk,ds=p.s-prev.s,dO=p.o-prev.o;if(Math.hypot(ds,dO)>1e-5)R.hd=Math.atan2(dO,ds);
+  var atPh=!R.mv&&(R.st<=1||R.st>=12);if(atPh)R.hd=Math.PI;   /* 휴대폰 앞에서는 화면을 바라봐요 */
+  EX.s=p.s;EX.off=p.o;EX.y=p.y+0.1*UV;EX.air=true;EX.vy=0;EX.vh=[0,0];EX.hdg=R.hd||0;
+  if(!EX.lookDrag&&(R.mv||atPh)){var dh=(R.hd||0)-EX.yaw;while(dh>Math.PI)dh-=2*Math.PI;while(dh<-Math.PI)dh+=2*Math.PI;EX.yaw+=dh*Math.min(1,dt*2);}
+}
+var LKROUTE=[['📱','phone','화면'],['🧠','ap','AP'],['📶','ant','안테나'],['📡','tower','기지국'],['🏢','office','교환국'],['🌐','router','라우터'],['🚪','gate','DC 문'],['🖥️','app','앱 서버'],['💾','db','DB']];
+function likeText(R){
+  if(!R)return '<div class="lkc"><b>📱 좋아요 체험관</b>휴대폰에서 ♥를 누르면 어디까지 갔다 올까요? <b>♥ 캡슐</b>을 타고 휴대폰 → 기지국 → 인터넷 → <b>AI 데이터센터</b> → 다시 휴대폰까지 날아가 봐요!<br><small>E로 시작!</small></div>';
+  var i=R.st,S=LKS[i],tot=0;for(var k=0;k<=i;k++)tot+=LKS[k].ms;
+  var red=i>=1,ok=i>=12,cnt=red?'1,025':'1,024',stt=i===0?'':(ok?'✓ 저장 완료':'⏳ 보내는 중');
+  var phone='<div class="lkph"><span class="lkh'+(red?' on':'')+'">'+(red?'❤️':'🤍')+'</span><b>'+cnt+'</b><small>'+stt+'</small></div>';
+  var at=R.mv?LKS[R.mv.to].at:S.at,ci=-1;LKROUTE.forEach(function(r,j){if(r[1]===at)ci=j;});if(!R.mv&&i===10)ci=8;
+  var back=i>=11||(R.mv&&R.mv.to===11);
+  var bar='<div class="lkrt'+(back?' back':'')+'">'+LKROUTE.map(function(r,j){return '<span'+(j===ci?' class="on"':'')+' title="'+r[2]+'">'+r[0]+'</span>';}).join('<i>'+(back?'‹':'›')+'</i>')+'</div>';
+  var pk='';if(i>=2&&i<=6)pk='<div class="lkpk lkenc">🔒 쪽지가 잠겨 있어요 · 겉에 받는 곳 주소만 보여요</div>';
+  if(i>=7&&i<=10)pk='<div class="lkpk">📨 쪽지 내용: "나 → 게시물 48213번에 ♥"</div>';
+  if(i>=11&&i<=12)pk='<div class="lkpk lkok">✅ 답장: "저장 완료! 좋아요 1,025개"</div>';
+  var mv=R.mv?'<div class="lkmv">🚀 '+LKROUTE[Math.max(0,ci)][2]+'(으)로 가는 중… '+Math.round(R.mv.u*100)+'%</div>':'';
+  var nav='<div class="dcnav"><button type="button" data-lk="-1"'+(i===0||R.mv?' disabled':'')+'>◀ 이전</button><span>'+(i+1)+'/'+LKS.length+'</span>'+(i===LKS.length-1?'<button type="button" data-lk="r">↺ 처음부터</button>':'<button type="button" data-lk="1"'+(R.mv?' disabled':'')+'>'+(i===0?'♥ 누르기':(LKS[i+1].seg?'🚀 출발':'다음 ▶'))+'</button>')+'</div>';
+  return '<div class="lkc"><b class="lkt">📱 '+(i+1)+'. '+S.t+'</b>'+nav+bar+mv+'<div class="lkrow">'+phone+'<span class="lktm">⏱ 실제로는<br><b>'+(tot/1000).toFixed(3)+'초</b></span></div><p class="lkb">'+S.b+'</p>'+pk+'<span class="plcoin" style="display:none">'+(i+1)+'/'+LKS.length+' 단계 · 아래 버튼으로 넘겨요</span><small class="lkft">W/S로도 넘겨요 · E 끝 · 모형은 실제보다 아주 크게 만들었어요</small></div>';
+}
+function likeLabels(){
+  function near(){var R=EX.ride;return (R&&R.k==='like')||Math.hypot(LKV.s-EX.s,LKV.o-EX.off)<12;}
+  [['phone','📱 내 휴대폰'],['ap','🧠 두뇌 칩(AP)'],['modem','모뎀 칩'],['ant','📶 안테나'],['tower','📡 기지국'],['office','🏢 통신사 건물'],['router','🌐 라우터(길 안내)'],['gate','🚪 데이터센터 문'],['app','🖥️ 서버실'],['db','💾 저장하는 서버']].forEach(function(q){
+    mkLab('mn',function(){if(!EX.on||!LKV.ready||!near())return null;var p=LKV.P[LKV.cp[q[0]]];if(!p)return null;return {p:pgW(p.s,p.o,p.y+(q[0]==='modem'?-4:30)),h:'<b>'+q[1]+'</b>'};});});
+  mkLab('mn',function(){if(!EX.on||!LKV.ready||!near())return null;var B=LKV.B;return {p:pgW(B.s,B.o,B.g+2),h:'<b>🔍 휴대폰 속(아주 크게 키웠어요)</b>'};});
+  mkLab('mn',function(){if(!EX.on||!LKV.ready||!near())return null;var R=EX.ride&&EX.ride.k==='like'?EX.ride:null,st=R?R.st:-1;
+    var c=st>=1?'❤️ 1,025':'🤍 1,024',ok=st>=12?' ✓':'';return {p:pgLW(LKV.s,LKV.o,0.04,LKV.hz-0.07,LKV.gy+7),h:'<b>'+c+ok+'</b>'};});
+}
+function likeDyn(L,tm){
+  if(!LKV.ready)return;var R=EX.ride&&EX.ride.k==='like'?EX.ride:null,c=pgW(LKV.s,LKV.o,LKV.gy),dq=Math.hypot(c[0]-camPos[0],c[2]-camPos[2]);if(dq>90&&!R)return;
+  var st=R?R.st:-1,to=R&&R.mv?R.mv.to:-1,stT=R?R.stT||0:0,s=LKV.s,o=LKV.o,g=LKV.gy,i,k;
+  /* 화면의 ♥ (빈 하트 → 빨간 하트 → 확정되면 아래 초록 줄) */
+  var red=st>=1,pop=st===1?Math.max(0,1-stT*2.5):0,cz=0.02*(1+0.35*pop),cy=1.0*(1+0.35*pop);
+  if(red)lkHeart(L,s,o,0.0365,LKV.hz,g+LKV.hy-pop*1.5,cz,cy,0.003,[2.6,0.25,0.45]);
+  else{lkHeart(L,s,o,0.0355,LKV.hz,g+LKV.hy,0.02,1.0,0.003,[0.15,0.15,0.18]);lkHeart(L,s,o,0.0365,LKV.hz,g+LKV.hy+0.5,0.013,0.75,0.003,[1.25,1.25,1.25]);}
+  if(st>=12)pgLB(L,s,o,0.0365,0.02,g+8.6,0.9,0.003,0.16,[0.4,2.4,0.7]);
+  /* 1단계: 터치 전극 격자가 빛나요 */
+  if(st===0||(st===1&&stT<1.2)){var gl=st===0?0.6+0.4*Math.sin(tm*3):1.4;for(k=0;k<8;k++)pgLB(L,s,o,0.037,-0.21+k*0.06,g+5,40,0.002,0.003,[0.3*gl,0.8*gl,2.2*gl]);for(k=0;k<11;k++)pgLB(L,s,o,0.037,0,g+6+k*3.8,0.3,0.002,0.44,[0.3*gl,0.8*gl,2.2*gl]);}
+  /* 터치한 자리에서 퍼지는 물결 */
+  if(st===1&&stT<1.6){var hw=pgLW(s,o,0.04,LKV.hz,g+LKV.hy+2.5),ax=lkAxes(s,o);for(k=0;k<2;k++){var rr=0.02+(stT*0.12+k*0.05)%0.16;for(var a=0;a<12;a++){var an=a*Math.PI/6,dz=Math.cos(an)*rr,dy=Math.sin(an)*rr;obb(L,[hw[0]+ax.z[0]*dz,hw[1]+dy*UM/UV,hw[2]+ax.z[2]*dz],ax.x,[0,1,0],0.004,0.006,0.006,[2.4,0.6,0.9]);}}}
+  /* 거대한 손가락: 0단계엔 ♥ 위에서 기다리고, 누르면 쿡! 찍고 돌아가요 */
+  if(R&&st<=1&&!R.mv){var push=st===0?0.09+0.025*Math.sin(tm*2.2):(stT<0.25?0.012+stT*0.1:Math.min(0.2,0.037+(stT-0.25)*0.25));
+    if(push<0.2){var ax2=lkAxes(s,o),tip=pgLW(s,o,0.034+push,LKV.hz,g+LKV.hy+2.5),dirv=[ax2.x[0]*0.8,0.5*UM/UV*0.02,ax2.x[2]*0.8];
+      var rec=p5RecR(L,tip,ax2.x,[0,1,0],ax2.z),sk=lkS([1.0,0.78,0.64]),u2=0.012;
+      for(k=0;k<5;k++)avEll(rec,0.035+k*0.045,0.02+k*0.04,0.01+k*0.035,0.05,0.045,0.045,sk,5,8);   /* 손가락 마디(오른쪽 위에서 뻗어 와요) */
+      avEll(rec,0.012,0.012,0.006,0.012,0.026,0.026,lkS([1.0,0.88,0.84]),4,6);   /* 손톱 */}}
+  /* 휴대폰 속 기판: 지나갈 때 칩이 빛나요 */
+  var B=LKV.B,C=LKV.chip,by=B.g+6;
+  if(st===2||to===2)pgLB(L,B.s,B.o,C.ap[0],C.ap[1],by+4.1,0.4,0.15,0.15,[0.6+Math.abs(Math.sin(tm*6)),1.6,2.6]);
+  if(to===3||st===3){pgLB(L,B.s,B.o,C.modem[0],C.modem[1],by+3.7,0.4,0.11,0.1,[2.6,2.0,0.4]);}
+  if(to===3||to===4||st===3)for(k=0;k<4;k++){var rr2=((tm*0.8+k/4)%1)*0.25;lkRing(L,pgW(B.s+C.ant[0],B.o+C.ant[1],by+7),0.02+rr2,0.003,[0.5,1.4,2.6],12);}
+  /* 기지국 꼭대기 빨간 항공 장애등 · 라우터 불빛 · DC 문 레이저 */
+  var T=LKV.T;if(Math.sin(tm*3)>0)obb(L,pgW(T.s,T.o,T.g+LKV.HT+1),[1,0,0],[0,1,0],0.012,0.012,0.012,[2.8,0.2,0.2]);
+  var Rr=LKV.R;for(k=0;k<9;k++){var z=[-0.14,0,0.14][k%3],yk=Rr.g+1+Math.floor(k/3)*3.5;pgLB(L,Rr.s,Rr.o,0.081,z,yk,0.7,0.003,0.08,Math.sin(tm*7+k*1.7)>0?[0.4,2.4,0.6]:[0.1,0.3,0.1]);}
+  var Gt=LKV.G;if(to===7||(st===7&&stT<1.5)){var lz=Math.sin(tm*5)*0.3;pgLB(L,Gt.s,Gt.o,0,lz,Gt.g+1,36,0.004,0.01,[0.4,2.0,2.8]);pgLB(L,Gt.s,Gt.o,0,0,Gt.g+((tm*20)%36)+1,0.4,0.004,0.62,[0.4,2.0,2.8]);}
+  /* 서버실 깜빡이는 불빛 · 앱 서버/DB 강조 */
+  var H=LKV.H;if(H){for(k=0;k<LKV.racks.length;k+=2){var rk=LKV.racks[k];if(Math.sin(tm*4+k)>0.3)pgLB(L,H.s,H.o,rk[0],rk[1]+0.045,H.g+3+(k%3)*2.5,0.8,0.12,0.004,k%4?[0.3,1.6,2.4]:[0.4,2.4,0.8]);}
+    if(st===8||to===8)pgLB(L,H.s,H.o,LKV.app[0],LKV.app[1],H.g+12.2,1,0.24,0.12,[2.6,2.0,0.3]);
+    if(st>=9&&st<=10)LKV.dbs.forEach(function(d,j){if(Math.sin(tm*6+j*2)>-0.2)pgLB(L,H.s,H.o,d[0],d[1],H.g+12.2,1,0.24,0.12,[0.4,2.6,0.8]);});}
+  if(!R)return;
+  /* ♥ 데이터 캡슐(내가 올라탄 것): 가는 길은 분홍, 답장은 초록 */
+  var p=pgW(R.pk.s,R.pk.o,R.pk.y),back=st>=11||to===11,col=back?[0.35,2.2,0.7]:[2.4,0.45,0.85],k2=0.006,wob=Math.sin(tm*3)*0.006;
+  var rec2={L:L,M:function(x,y,z){return [p[0]+x*k2,p[1]+wob+y*k2,p[2]+z*k2];},N:function(a,b,c){return [a,b,c];}};
+  avEll(rec2,0,0,0,30,18,30,lkG(col.map(function(v){return Math.min(1,v*0.45);})),6,10);avEll(rec2,0,0,0,34,6,34,[2.4,2.4,2.4],4,10);
+  for(k=0;k<6;k++){var an2=tm*1.5+k*Math.PI/3;obb(L,[p[0]+Math.cos(an2)*0.21,p[1]+wob-0.02,p[2]+Math.sin(an2)*0.21],[1,0,0],[0,1,0],0.01,0.01,0.01,col);}   /* 둘레의 불빛 */
+  if(R.mv){for(var t=1;t<=8;t++){var u=Math.max(0,R.mv.u-t*0.012),eu=u<0.5?2*u*u:1-Math.pow(-2*u+2,2)/2,qq=likeAt(R.mv.a,R.mv.b,eu),w=pgW(qq.s,qq.o,qq.y),sz=0.03*(1-t/9);obb(L,w,[1,0,0],[0,1,0],sz,sz,sz,col);}}
+  if(to===4){for(k=0;k<6;k++){var u3=((tm*0.9+k/6)%1),q3=likeAt(LKV.cp.ant,LKV.cp.tower,u3),w3=pgW(q3.s,q3.o,q3.y),r3=0.05+0.12*u3;lkRing(L,w3,r3,0.004,[0.5,1.4,2.6],10);}}   /* 전파 고리 */
+  if((to>=5&&to<=7)||to===11)for(k=0;k<16;k++){var u4=((tm*0.6+k/16)%1),q4=likeAt(LKV.cp.tower+1,LKV.cp.gate,u4);obb(L,pgW(q4.s,q4.o,exGround(q4.s,q4.o)+2),[1,0,0],[0,1,0],0.012,0.012,0.012,[2.6,1.6,0.4]);}   /* 광케이블 속 빛 */
+  if(st===9||to===9){LKV.dbs.forEach(function(d,j){var a5=pgLW(H.s,H.o,LKV.app[0],LKV.app[1],H.g+18),b5=pgLW(H.s,H.o,d[0],d[1],H.g+13),u5=((tm*0.7+j*0.2)%1);obb(L,[a5[0]+(b5[0]-a5[0])*u5,a5[1]+(b5[1]-a5[1])*u5,a5[2]+(b5[2]-a5[2])*u5],[1,0,0],[0,1,0],0.025,0.025,0.025,[2.4,0.45,0.85]);});}   /* 복사본으로 나뉘어 저장 */
+  if(st===10){var hz=(tm*0.35)%1,w6=pgW(R.pk.s,R.pk.o,R.pk.y+hz*400);obb(L,w6,[1,0,0],[0,1,0],0.03,0.03,0.03,[2.6,2.3,0.4]);lkRing(L,w6,0.06+hz*0.05,0.004,[2.6,2.3,0.4],10);}   /* 알림 신호 */
 }
 
 /* ===== 진화 몬스터 7계열 (이 게임만의 오리지널 캐릭터, 모두 3단 진화) =====
@@ -4776,14 +5143,14 @@ function spStep(dt){
   else{
     /* 카메라가 보는 방향 기준으로 3D 추진 */
     var cy=Math.cos(EX.yaw),sy=Math.sin(EX.yaw),cp=Math.cos(EX.pitch),sp2=Math.sin(EX.pitch);
-    var f=[cy*cp,-sp2,sy*cp],r=[-sy,0,cy],A=SP.mode==='in'?0.9:1.2;
-    var a=[(f[0]*fw+r[0]*st)*A,(f[1]*fw+up)*A,(f[2]*fw+r[2]*st)*A],any=Math.abs(fw)+Math.abs(st)+Math.abs(up)>0.05;
+    var f=[cy*cp,-sp2,sy*cp],r=[-sy,0,cy],A=SP.mode==='in'?1.4:4.0;   /* 우주 유영: 더 힘센 추진기(게임용) */
+    var a=[(f[0]*fw+r[0]*st)*A,(f[1]*fw+up)*A,(f[2]*fw+r[2]*st)*A],any=Math.abs(fw)+Math.abs(st)+Math.abs(up)>0.25;   /* 조이스틱이 살짝 남아 있어도 자동 복귀가 끊기지 않게 */
     if(any)SP.goto=null;else if(SP.mode==='eva'&&SP.goto&&SP.ride==null){var gt=spGoAcc();if(gt){a=gt;any=true;}}
     if(SP.mode==='eva'&&spObjStep(dt,any,a)){SP.thr=0;}else{
     var sp=Math.hypot(SP.v[0],SP.v[1],SP.v[2]);
-    if((SP.sas&&!any)||SP.brake){if(sp<0.03){SP.v=[0,0,0];SP.brake=false;}else{var k=(SP.brake?1.6:0.9)/sp;a[0]-=SP.v[0]*k;a[1]-=SP.v[1]*k;a[2]-=SP.v[2]*k;}}
+    if((SP.sas&&!any&&!SP.goto)||SP.brake){if(sp<0.03){SP.v=[0,0,0];SP.brake=false;}else{var k=(SP.brake?4:(SP.mode==='in'?1.2:2.5))/sp;a[0]-=SP.v[0]*k;a[1]-=SP.v[1]*k;a[2]-=SP.v[2]*k;}}
     SP.thr=any?1:0;
-    for(i=0;i<3;i++){SP.v[i]+=a[i]*dt;SP.v[i]=clamp(SP.v[i],-5,5);SP.p[i]+=SP.v[i]*dt/50;}
+    var VM=SP.mode==='in'?4:20;for(i=0;i<3;i++){SP.v[i]+=a[i]*dt;SP.v[i]=clamp(SP.v[i],-VM,VM);SP.p[i]+=SP.v[i]*dt/50;}
     if(SP.mode==='in'){var c=SPX.hab.c,h=SPX.hab.h;for(i=0;i<3;i++){var lo=c[i]-h[i]+0.012,hi=c[i]+h[i]-0.012;if(SP.p[i]<lo){SP.p[i]=lo;SP.v[i]=Math.abs(SP.v[i])*0.3;}if(SP.p[i]>hi){SP.p[i]=hi;SP.v[i]=-Math.abs(SP.v[i])*0.3;}}}
     else{var d=Math.hypot(SP.p[0],SP.p[1],SP.p[2]);if(d>12){for(i=0;i<3;i++){SP.p[i]*=12/d;SP.v[i]=0;}}}
     }
@@ -4953,10 +5320,25 @@ function spObjInit(){
     {n:'작은 운석',c:[1.9,-0.55,-0.75],h:0.06,col:[0.42,0.38,0.35],deco:'',w:0.12},
     {n:'버려진 인공위성 조각',c:[-0.75,-1.05,-1.5],h:0.03,col:[0.78,0.78,0.82],deco:'panel',w:0.2,m:900},
     {n:'떠다니는 관측 플랫폼',c:[2.5,1.3,0.55],h:0.12,col:[0.6,0.6,0.64],deco:'tower',w:-0.04},
-    {n:'아기 운석',c:[-2.4,1.1,-0.35],h:0.04,col:[0.48,0.42,0.36],deco:'',w:0.15}];
+    {n:'아기 운석',c:[-2.4,1.1,-0.35],h:0.04,col:[0.48,0.42,0.36],deco:'',w:0.15},
+    {n:'철광석 운석',c:[3.2,-0.4,1.8],h:0.14,col:[0.45,0.36,0.32],deco:'flag',w:0.05,m:6200000},
+    {n:'얼음 운석',c:[-3.1,-0.8,2.2],h:0.12,col:[0.75,0.82,0.9],deco:'',w:-0.07,m:700000},
+    {n:'쌍둥이 운석 A',c:[1.2,2.1,-2.4],h:0.09,col:[0.5,0.45,0.4],deco:'',w:0.09},
+    {n:'쌍둥이 운석 B',c:[1.6,2.3,-2.1],h:0.07,col:[0.47,0.43,0.39],deco:'',w:-0.11},
+    {n:'평평한 착륙 운석',c:[-1.2,-2.0,3.0],h:0.2,col:[0.55,0.5,0.45],deco:'tower',w:0.02},
+    {n:'검은 탄소 운석',c:[3.8,1.4,-1.0],h:0.1,col:[0.25,0.24,0.24],deco:'',w:0.08},
+    {n:'붉은 운석',c:[-3.6,1.8,-2.2],h:0.13,col:[0.62,0.36,0.28],deco:'flag',w:-0.05},
+    {n:'자갈 운석 무리',c:[0.3,-2.6,-2.8],h:0.08,col:[0.5,0.48,0.44],deco:'',w:0.13},
+    {n:'통신위성',c:[2.2,-1.6,2.6],h:0.05,col:[0.85,0.72,0.3],deco:'sat',w:0.06,m:4500},
+    {n:'기상위성',c:[-2.6,-1.4,-2.8],h:0.045,col:[0.8,0.8,0.84],deco:'sat',w:-0.05,m:2800},
+    {n:'GPS 위성',c:[4.2,0.2,0.4],h:0.04,col:[0.85,0.72,0.3],deco:'sat',w:0.08,m:2200},
+    {n:'우주망원경',c:[-1.0,2.8,2.4],h:0.06,col:[0.88,0.88,0.9],deco:'scope',w:0.03,m:11000},
+    {n:'큐브샛(작은 학생 위성)',c:[0.9,0.9,-1.7],h:0.018,col:[0.6,0.62,0.66],deco:'sat',w:0.2,m:4},
+    {n:'지구 관측 위성',c:[-4.0,0.3,0.9],h:0.05,col:[0.82,0.82,0.86],deco:'sat',w:-0.04,m:1500}];
   SPO=D.map(function(d,i){var side=d.h*100,m=d.m||Math.round(2700*side*side*side*0.45);   /* 암석 밀도 2,700 kg/m³ · 울퉁불퉁해서 부피의 약 45% */
     var ch=[],k;for(k=0;k<6;k++){var a=k*1.7+i,b=k*2.3+i*0.7;ch.push({o:[Math.cos(a)*d.h*0.45,Math.sin(b)*d.h*0.35,Math.sin(a)*d.h*0.45],s:[d.h*(0.55+0.25*Math.sin(k+i)),d.h*(0.45+0.2*Math.cos(k*2+i)),d.h*(0.5+0.2*Math.sin(k*3+i))],t:k*0.6+i,col:[d.col[0]*(0.85+0.05*k%3),d.col[1]*(0.85+0.05*k%3),d.col[2]*(0.85+0.05*k%3)]});}
-    if(d.deco==='panel')ch=[{o:[0,0,0],s:[d.h*0.6,d.h*0.6,d.h*0.9],t:0,col:[0.85,0.75,0.35]}];
+    if(d.deco==='panel'||d.deco==='sat')ch=[{o:[0,0,0],s:[d.h*0.6,d.h*0.6,d.h*0.9],t:0,col:d.deco==='sat'?d.col:[0.85,0.75,0.35]}];
+    if(d.deco==='scope')ch=[{o:[0,0,0],s:[d.h*1.6,d.h*0.55,d.h*0.55],t:0,col:d.col},{o:[d.h*0.9,0,0],s:[d.h*0.3,d.h*0.6,d.h*0.6],t:0,col:[0.3,0.3,0.32]}];
     return {n:d.n,c:d.c.slice(),c0:d.c.slice(),h:d.h,m:m,v:[0,0,0],ang:i,w:d.w,ch:ch,deco:d.deco,R:d.h*1.25};});
 }
 function spRotY(v,a){var c=Math.cos(a),s=Math.sin(a);return [v[0]*c+v[2]*s,v[1],-v[0]*s+v[2]*c];}
@@ -4992,6 +5374,10 @@ function spObjDraw(L,tm){
       var lt=Math.sin(tm*3+o.ang)>0.3;obb(L,[top[0],top[1]+o.h+0.006,top[2]],ax,az,0.008,0.008,0.008,lt?[2.2,0.3,0.2]:[0.4,0.1,0.1]);
       var sp=spRotY([o.h*0.6,0,0],o.ang);obb(L,[top[0]+sp[0],top[1]+o.h*0.3,top[2]+sp[2]],ax,az,o.h*0.25,0.003,o.h*0.18,[0.12,0.18,0.42]);}
     if(o.deco==='flag'){obb(L,[top[0],top[1]+o.h*0.35,top[2]],ax,az,0.003,o.h*0.35,0.003,[0.9,0.9,0.9]);var fp=spRotY([0.03,0,0],o.ang);obb(L,[top[0]+fp[0],top[1]+o.h*0.6,top[2]+fp[2]],ax,az,0.03,0.018,0.002,[0.9,0.2,0.25]);}
+    if(o.deco==='sat'){[-1,1].forEach(function(q){var w=spRotY([0,0,q*o.h*2.2],o.ang);obb(L,[o.c[0]+w[0],o.c[1],o.c[2]+w[2]],ax,az,o.h*0.5,0.002,o.h*1.6,[0.12,0.2,0.5]);var w2=spRotY([0,0,q*o.h*0.8],o.ang);obb(L,[o.c[0]+w2[0],o.c[1],o.c[2]+w2[2]],ax,az,0.002,0.002,o.h*0.4,[0.7,0.7,0.72]);});
+      var dp=spRotY([o.h*0.75,0,0],o.ang);obb(L,[o.c[0]+dp[0],o.c[1]+o.h*0.2,o.c[2]+dp[2]],ax,az,0.003,o.h*0.45,o.h*0.45,[0.95,0.95,0.95]);obb(L,[o.c[0],o.c[1]+o.h*0.75,o.c[2]],ax,az,0.002,o.h*0.4,0.002,[0.8,0.8,0.8]);
+      var bl=Math.sin(tm*4+o.ang)>0.5;obb(L,[o.c[0],o.c[1]+o.h*1.15,o.c[2]],ax,az,0.004,0.004,0.004,bl?[0.4,2.4,0.6]:[0.1,0.3,0.1]);}
+    if(o.deco==='scope'){[-1,1].forEach(function(q){var w=spRotY([0,0,q*o.h*1.1],o.ang);obb(L,[o.c[0]+w[0],o.c[1],o.c[2]+w[2]],ax,az,o.h*1.0,0.002,o.h*0.4,[0.12,0.2,0.5]);});}
     if(o.deco==='panel'){[-1,1].forEach(function(q){var w=spRotY([q*o.h*1.6,0,0],o.ang);obb(L,[o.c[0]+w[0],o.c[1],o.c[2]+w[2]],ax,az,o.h*1.0,0.002,o.h*0.55,[0.12,0.2,0.48]);});}
   });
 }
@@ -5006,11 +5392,11 @@ function spObjInfo(){
 /* 자동 비행: 목표까지 천천히(최대 3 m/s) 날아가고, 가까워지면 속도를 줄여요 */
 function spGoAcc(){
   var tg=null,i;
-  if(SP.goto==='air'){SP.cool=Math.max(SP.cool||0,0.3);tg=[-0.17,0,0.30];if(Math.hypot(SP.p[0]-tg[0],SP.p[1]-tg[1],SP.p[2]-tg[2])<0.03){SP.goto=null;spGoInside([-0.06,0,0.30]);exMsg('🚪 에어록으로 들어왔어요');spCard(true);return null;}}
+  if(SP.goto==='air'){SP.cool=Math.max(SP.cool||0,0.3);tg=[-0.17,0,0.30];if(Math.hypot(SP.p[0]-tg[0],SP.p[1]-tg[1],SP.p[2]-tg[2])<0.05){SP.goto=null;spGoInside([-0.06,0,0.30]);exMsg('🚪 에어록으로 들어왔어요');spCard(true);return null;}}
   else{var b=null,bd=1e9;SPO.forEach(function(o){var d=Math.hypot(SP.p[0]-o.c[0],SP.p[1]-o.c[1],SP.p[2]-o.c[2])-o.R;if(d<bd){bd=d;b=o;}});
     if(!b)return null;var dx=SP.p[0]-b.c[0],dy=SP.p[1]-b.c[1],dz=SP.p[2]-b.c[2],d0=Math.hypot(dx,dy,dz)||1;tg=[b.c[0]+dx/d0*(b.R*0.9),b.c[1]+dy/d0*(b.R*0.9),b.c[2]+dz/d0*(b.R*0.9)];}
-  var D=[(tg[0]-SP.p[0])*50,(tg[1]-SP.p[1])*50,(tg[2]-SP.p[2])*50],dist=Math.hypot(D[0],D[1],D[2])||1e-6,vs=Math.min(3,0.25+dist*0.25),a=[];
-  for(i=0;i<3;i++){a[i]=clamp((D[i]/dist*vs-SP.v[i])*1.2,-1.5,1.5);}
+  var D=[(tg[0]-SP.p[0])*50,(tg[1]-SP.p[1])*50,(tg[2]-SP.p[2])*50],dist=Math.hypot(D[0],D[1],D[2])||1e-6,vs=Math.min(18,0.4+dist*0.45),a=[];
+  for(i=0;i<3;i++){a[i]=clamp((D[i]/dist*vs-SP.v[i])*2.0,-6,6);}
   return a;
 }
 
@@ -5706,7 +6092,7 @@ function avRects(){var R=[];AVPTS.forEach(function(a){var p=a[0],h=a[1],b=proj(p
 function updateLabels(){
   var AR0=avRects();
   if(!use3d||(typeof syCustom==='function'&&syCustom())){LABS.forEach(function(L){L.el.style.display='none';});return;}
-  var inSp=typeof SP!=='undefined'&&SP.on,AR=inSp?[]:AR0,MV=[];
+  var inSp=typeof SP!=='undefined'&&SP.on,AR=inSp?[]:AR0,MV=[],VIS=[];
   LABS.forEach(function(L){
     var d=L.fn();if(!d||(inSp&&!d.space)){L.el.style.display='none';return;}
     var dist=Math.hypot(d.p[0]-camPos[0],d.p[1]-camPos[1],d.p[2]-camPos[2]);
@@ -5718,13 +6104,25 @@ function updateLabels(){
     L.el.style.background=d.cls==='hit'?'#E8C9A0':'';
     if(L.el.dataset.h!==d.h){L.el.innerHTML=d.h;L.el.dataset.h=d.h;L.w=0;}
     /* 이름표가 캐릭터와 겹치면 캐릭터 머리 위로 비켜 올려요(숨기지 않아요 · 친구 이름표는 빼고) */
-    var lifted=false;if(AR.length&&L.el.className.indexOf('pn')<0){if(!L.w){var lf=L.el.classList.contains('lift');if(lf)L.el.classList.remove('lift');L.w=L.el.offsetWidth;L.h=L.el.offsetHeight;L.h2=L.el.querySelector('small')?Math.round(L.h*0.56):L.h;if(lf)L.el.classList.add('lift');}var w=L.w,h=L.h,y=q.y;
+    var lifted=false;if(AR.length&&L.el.className.indexOf('pn')<0){if(!L.w||L.w<6){var lf=L.el.classList.contains('lift');if(lf)L.el.classList.remove('lift');L.w=L.el.offsetWidth;L.h=L.el.offsetHeight;L.h2=L.el.querySelector('small')?Math.round(L.h*0.56):L.h;if(lf)L.el.classList.add('lift');}var w=L.w,h=L.h,y=q.y;
       for(var it=0;it<3;it++){var x0=q.x-w/2,x1=q.x+w/2,y0=y-h,mv=false;
         for(var i=0;i<AR.length;i++){var r=AR[i];if(x0<r[2]&&x1>r[0]&&y0<r[3]&&y>r[1]){y=r[1]-3;mv=true;}}if(!mv)break;}
       if(y!==q.y){for(var g=0;g<12;g++){var hit=false;for(var m=0;m<MV.length;m++){var r2=MV[m];if(q.x-w/2<r2[2]&&q.x+w/2>r2[0]&&y-L.h2<r2[3]&&y>r2[1]){y=r2[1]-2;hit=true;}}if(!hit)break;}   /* 비켜 올린 이름표끼리도 겹치지 않게 쌓아요 */
         y=Math.max(h+4,y);MV.push([q.x-w/2,y-L.h2,q.x+w/2,y]);L.el.style.top=y+'px';lifted=true;}}
     if(L.el.classList.contains('lift')!==lifted)L.el.classList.toggle('lift',lifted);
+    if(!L.w||L.w<6){L.w=L.el.offsetWidth;L.h=L.el.offsetHeight;L.h2=L.el.querySelector('small')?Math.round(L.h*0.56):L.h;}
+    var cn=L.el.className,fy=parseFloat(L.el.style.top)||q.y;VIS.push({L:L,x:q.x,y:fy,w:L.w,h:lifted?L.h2:L.h,d:dist,p:cn.indexOf('pn')>=0?0:(cn.indexOf('hub')>=0?1:2)});
   });
+  /* 이름표끼리·화면 단추와 겹치면 가까운 것만 남기고 숨겨요(좁은 휴대폰 화면에서 글자가 겹쳐 안 보이는 것 방지) */
+  var UI=[],base=labelsEl.getBoundingClientRect();
+  ['#pgcard','#plcard','#exmsg','#exhud','#exbtns','#exctl','#exact','#exff','#skres','#exDown','#exjump','.spbtn','#exchar','#exmenu'].forEach(function(sel){var e=document.querySelector(sel);if(!e||e.hidden||e.offsetParent===null)return;
+    if(sel==='#exctl'||sel==='#exbtns'){[].forEach.call(e.querySelectorAll('button,.exjoy'),function(b){if(b.offsetParent===null)return;var r=b.getBoundingClientRect();UI.push([r.left-base.left,r.top-base.top,r.right-base.left,r.bottom-base.top]);});return;}
+    var r=e.getBoundingClientRect();if(r.width>0)UI.push([r.left-base.left,r.top-base.top,r.right-base.left,r.bottom-base.top]);});
+  VIS.sort(function(a,b){return a.p-b.p||a.d-b.d;});var PL=[];
+  VIS.forEach(function(v){var x0=v.x-v.w/2-3,x1=v.x+v.w/2+3,y0=v.y-v.h-3,y1=v.y+2,bad=false,i;
+    if(v.p>0){for(i=0;i<UI.length&&!bad;i++){var r=UI[i];if(x0<r[2]&&x1>r[0]&&y0<r[3]&&y1>r[1])bad=true;}}
+    for(i=0;i<PL.length&&!bad;i++){var r2=PL[i];if(x0<r2[2]&&x1>r2[0]&&y0<r2[3]&&y1>r2[1])bad=v.p>0;}
+    v.L.el.style.visibility=bad?'hidden':'';if(!bad)PL.push([x0,y0,x1,y1]);});
 }
 
 /* ===== 패널 ===== */
@@ -6006,7 +6404,7 @@ mpInit();
 lakeReset();
 setupLabels();syncCamBtns();renderPanel();
 (function(){var T=camTarget({on:false,has:false,s:0});camS.tx=T.x;camS.ty=T.y;camS.tz=T.z;camS.dist=camG.fol.dist;camS.yaw=camG.fol.yaw;camS.pitch=camG.fol.pitch;camS.phi=pathHeading(T.s);})();
-if(DBG)window.__dbg={EVO:EVO,evoStage:evoStage,p5Eagles:p5Eagles,newL:newL,exBuild:exBuild,p5Dyn:p5Dyn,exAvatar:exAvatar,pgMkB:pgMkB,updateLabels:updateLabels,p5CarH:p5CarH,P5:P5,meshH:meshH,CARM:CARM,PG:PG,pgStart:pgStart,pgEnd:pgEnd,pgSim:pgSim,pgBuild:pgBuild,CH:CH,visH:visH,UM:UM,UV:UV,vil:vil,exGround:exGround,NR:NR,R0:R0,exPlace:exPlace,PLT:PLT,plCalc:plCalc,exStep:exStep,EX:EX,MP:MP,RL:RL,f9Sim:f9Sim,F9:F9,pgSeg:pgSeg,pgLoopV:pgLoopV,pgLoopVs:pgLoopVs,pgCoT:pgCoT,pgText:pgText,pgFF:pgFF,SP:SP,spEnter:spEnter,spExit:spExit,spAct:spAct,SPX:SPX,syStart:syStart,syCustom:syCustom,mpSync:mpSync,mpGoNext:mpGoNext,SYV:SYV,drawSoyuz:drawSoyuz,spFF:spFF,syStep1:syStep1,SYP:SYP,syH:syH,pgPos:pgPos,pgCoDist:pgCoDist,pgAct:pgAct,RF:RF,pre:pre,LK:LK,updatePre:updatePre,S:S,cur:cur,pl:pl,doReset:doReset,startRun:startRun,camG:camG,frags:[],stateAt:stateAt,ui:ui,VIL:VIL};
+if(DBG)window.__dbg={exEnter:exEnter,LKV:LKV,LKS:LKS,likeGo:likeGo,likeText:likeText,EVO:EVO,evoStage:evoStage,p5Eagles:p5Eagles,newL:newL,exBuild:exBuild,p5Dyn:p5Dyn,exAvatar:exAvatar,pgMkB:pgMkB,updateLabels:updateLabels,p5CarH:p5CarH,P5:P5,meshH:meshH,CARM:CARM,PG:PG,pgStart:pgStart,pgEnd:pgEnd,pgSim:pgSim,pgBuild:pgBuild,CH:CH,visH:visH,UM:UM,UV:UV,vil:vil,exGround:exGround,NR:NR,R0:R0,exPlace:exPlace,PLT:PLT,plCalc:plCalc,exStep:exStep,EX:EX,MP:MP,RL:RL,f9Sim:f9Sim,F9:F9,pgSeg:pgSeg,pgLoopV:pgLoopV,pgLoopVs:pgLoopVs,pgCoT:pgCoT,pgText:pgText,pgFF:pgFF,SP:SP,spEnter:spEnter,spExit:spExit,spAct:spAct,SPX:SPX,syStart:syStart,syCustom:syCustom,mpSync:mpSync,mpGoNext:mpGoNext,SYV:SYV,drawSoyuz:drawSoyuz,spFF:spFF,syStep1:syStep1,SYP:SYP,syH:syH,pgPos:pgPos,pgCoDist:pgCoDist,pgAct:pgAct,RF:RF,pre:pre,LK:LK,updatePre:updatePre,S:S,cur:cur,pl:pl,doReset:doReset,startRun:startRun,camG:camG,frags:[],stateAt:stateAt,ui:ui,VIL:VIL};
 requestAnimationFrame(loop);
 if(DBG)window.__dbg.prof=function(){var o=[],tm=1;[['sy',function(L){syDyn(L,tm);}],['tw',function(L){if(typeof twDyn==='function')twDyn(L,tm);}],['p5',function(L){p5Dyn(L,tm);}],['pl',function(L){if(PLT.built)plDyn(L,tm);}],['mp',function(L){mpDraw(L,tm);}],
  ['train',function(L){PG.COS.forEach(function(T){pgTrain(L,tm,T);});}],['bungee',function(L){if(typeof pgBungeeDyn==='function')pgBungeeDyn(L,tm);}],['para',function(L){pgParaDyn(L,tm);}],['gv',function(L){pgGVDyn(L,tm);}],['therm',function(L){pgThermDyn(L,tm);}],['rocket',function(L){if(typeof pgRocketDyn==='function')pgRocketDyn(L,tm);}],['all',function(L){exBuild(L,tm);}]].forEach(function(q){
@@ -6093,9 +6491,9 @@ function mobCards(){
       pk.addEventListener('pointerup',function(){if(y0!=null&&!moved)mobCardSet(el,!el.classList.contains('open'));y0=null;});
       pk.addEventListener('pointercancel',function(){y0=null;});}
     if(el.hidden||!MOB.on)return;
-    var rk=EX.ride?EX.ride.k:'';if(el.dataset.rk!==rk){el.dataset.rk=rk;if(rk)mobCardSet(el,false);}   /* 놀이기구를 타기 시작하면 설명은 접어서 앞이 잘 보이게 */
+    var rk=EX.ride?EX.ride.k:'';if(el.dataset.rk!==rk){el.dataset.rk=rk;if(rk)mobCardSet(el,rk==='dc'||rk==='like');}   /* 놀이기구를 타기 시작하면 설명은 접어서 앞이 잘 보이게 */
     var p=mobPeekText(el);if(!p)return;
-    if(el.dataset.pt!==p.t){if(el.dataset.pt)mobCardSet(el,false);el.dataset.pt=p.t;}   /* 다른 설명으로 바뀌면 다시 접어요 */
+    if(el.dataset.pt!==p.t){if(el.dataset.pt&&!(EX.ride&&(EX.ride.k==='dc'||EX.ride.k==='like')))mobCardSet(el,false);el.dataset.pt=p.t;}   /* 다른 설명으로 바뀌면 다시 접어요 */
     pk.querySelector('b').textContent=p.t;pk.querySelector('span').textContent=p.n;
   });
 }
