@@ -449,6 +449,7 @@ html,body{overscroll-behavior:none}
 #app.mob.lkride .lkc .dcnav button{min-height:42px;font-size:15px}
 /* 휴대폰 가로: 오른쪽 옆 판 */
 #app.mobL.lkride #pgcard{top:46px!important;bottom:auto!important;left:auto!important;width:40vw!important;max-height:calc(100% - 56px)!important}
+#exSpd{display:none!important}
 </style>
 
 <div id="app">
@@ -1719,7 +1720,7 @@ function exCharUI(show){
 }
 
 /* ===== 탐험 모드: 지형 위를 걷고 뛰며 높이·위치에너지·운동에너지를 본다 ===== */
-var EX={on:false,s:0,off:0,y:0,vy:0,vh:[0,0],air:false,yaw:Math.PI,pitch:0.32,dist:2.4,fp:false,mass:50,ref:'low',refC:3000,drag:false,lvl:0,
+var EX={on:false,s:0,off:0,y:0,vy:0,vh:[0,0],air:false,yaw:Math.PI,pitch:0.32,dist:2.4,fp:false,mass:50,ref:'low',refC:3000,drag:false,lvl:2,
   keys:{},jx:0,jy:0,holdT:0,jumpEdge:false,apex:0,lost:0,land:null,landT:0,flags:[],got:{},hdg:Math.PI,anim:0,spd:0,jet:false,hudT:0,prevMode:'fol',inited:false,msgT:0};
 var EXG=9.81,EXVT=55,EX_TOP=7234,EXSMIN=21,EXSPD=[20,60,180],EXJUMP=20;
 var exM=null,EXV=4200*36;
@@ -1773,7 +1774,7 @@ function exStep1(dt){
   var fw=(E.keys.w||E.keys.up?1:0)-(E.keys.s||E.keys.down?1:0)-E.jy,st=(E.keys.d||E.keys.right?1:0)-(E.keys.a||E.keys.left?1:0)+E.jx;
   var mg=Math.hypot(fw,st);if(mg>1){fw/=mg;st/=mg;mg=1;}
   var cy=Math.cos(E.yaw),sy=Math.sin(E.yaw),ds=fw*cy-st*sy,dO=fw*sy+st*cy;
-  var lvl=Math.min(2,E.lvl+(E.keys.shift?1:0)),spd=EXSPD[lvl]*exCh().sp;
+  var lvl=2;E.lvl=2;var spd=EXSPD[lvl]*exCh().sp;
   E.spd=spd*mg;
   if(mg>0.05){var ta=Math.atan2(dO,ds),da=ta-E.hdg;while(da>Math.PI)da-=2*Math.PI;while(da<-Math.PI)da+=2*Math.PI;E.hdg+=da*Math.min(1,dt*12);}
   E.anim+=Math.max(E.spd,0)*dt*0.35;
@@ -1978,7 +1979,7 @@ function exHud(dt){
   $('#exhud').innerHTML=h2;
 }
 function exMenu(){
-  var h='<div class="exmh"><b>탐험 설정 <small style="font-weight:600;color:#888">버전 v86</small></b><button type="button" id="exMClose" aria-label="닫기">✕</button></div>';
+  var h='<div class="exmh"><b>탐험 설정 <small style="font-weight:600;color:#888">버전 v87</small></b><button type="button" id="exMClose" aria-label="닫기">✕</button></div>';
   h+='<div class="exquick mobonly"><button type="button" data-q="exQR">📱 QR로 친구 부르기</button><button type="button" data-q="exHudB">📊 에너지창 켜기/끄기</button><button type="button" data-q="exCardB">📖 설명창 켜기/끄기</button><button type="button" data-q="exExit">🧪 실험실로 나가기</button></div>';
   h+='<label>내 몸무게 <b id="exMv">'+EX.mass+' kg</b><input id="exMass" type="range" min="20" max="100" step="1" value="'+EX.mass+'"></label>';
   h+='<label>기준 높이(위치에너지 0)<select id="exRef"><option value="low">지도에서 가장 낮은 곳 ('+fN(elev(LTOT),0)+' m)</option><option value="ras">라수와가디 마을 ('+fN(elev(vil('ras').s),0)+' m)</option><option value="sea">해수면 (0 m)</option><option value="me">내가 고른 곳</option></select></label>';
@@ -1986,7 +1987,7 @@ function exMenu(){
   h+='<label class="exck"><input id="exDrag" type="checkbox"> 공기저항 켜기 <small>(끄면 위치+운동 에너지 합이 그대로예요)</small></label>';
   h+='<button type="button" class="exb" id="exMChr">👕 캐릭터 바꾸기 (지금: '+exCh().n+')</button>';
   h+='<label>순간이동<select id="exTp"></select></label><button type="button" class="exb" id="exGo">이동</button>';
-  h+='<div class="exhelp"><b>조작</b><br>이동 W A S D / 방향키 · 보기 마우스 끌기 · 확대 휠<br>점프 스페이스(<b>길게 누르면 제트팩</b>) · 빠르게 Shift, 숫자 1·2·3<br>시점 V · 메뉴 M · 처음 자리 R<br><small>※ 걷는 속도·점프 높이·제트팩은 넓은 지도를 둘러보려고 키운 <b>게임 설정</b>이에요. 에너지 계산은 실제 물리식 mgh, ½mv²를 써요. 최고 높이는 랑탕리룽 정상 높이(약 7,234 m)까지예요.</small></div>';
+  h+='<div class="exhelp"><b>조작</b><br>이동 W A S D / 방향키 · 보기 마우스 끌기 · 확대 휠<br>점프 스페이스(<b>길게 누르면 제트팩</b>) · 이동은 언제나 번개 속도<br>시점 V · 메뉴 M · 처음 자리 R<br><small>※ 걷는 속도·점프 높이·제트팩은 넓은 지도를 둘러보려고 키운 <b>게임 설정</b>이에요. 에너지 계산은 실제 물리식 mgh, ½mv²를 써요. 최고 높이는 랑탕리룽 정상 높이(약 7,234 m)까지예요.</small></div>';
   $('#exmenu').innerHTML=h;
   var sel=$('#exTp');EX.spots=exSpots();EX.spots.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.n;sel.appendChild(o);});
   $('#exRef').value=EX.ref;$('#exDrag').checked=EX.drag;
@@ -2042,7 +2043,7 @@ function exView(){EX.fp=!EX.fp;$('#exView').textContent=EX.fp?'3인칭으로':'1
     if(m){e.preventDefault();if(m==='space'&&down&&!EX.keys.space)EX.jumpEdge=true;EX.keys[m]=down;return;}
     if(!down)return;
     if(k==='v')exView();else if(k==='m')$('#exmenu').hidden=!$('#exmenu').hidden;else if(k==='r'){if(SP.on){spExit();return;}if(EX.ride)pgEnd(true,true);exHome();}else if(k==='e')pgAct();else if(k==='f')pgFF();else if(k==='h')EX.tglCard();else if(k==='g')EX.tglHud();
-    else if(k==='1'||k==='2'||k==='3'){EX.lvl=parseInt(k,10)-1;exLvlUI();}
+    
   }
   document.addEventListener('keydown',function(e){onKey(e,true);});
   document.addEventListener('keyup',function(e){onKey(e,false);});
@@ -2082,7 +2083,7 @@ function exView(){EX.fp=!EX.fp;$('#exView').textContent=EX.fp?'3인칭으로':'1
   jb.addEventListener('pointerdown',function(e){try{jb.setPointerCapture(e.pointerId);}catch(x){}if(!EX.keys.space)EX.jumpEdge=true;EX.keys.space=true;e.preventDefault();});
   function jbu(){EX.keys.space=false;}
   jb.addEventListener('pointerup',jbu);jb.addEventListener('pointercancel',jbu);
-  $('#exSpd').addEventListener('click',function(){EX.lvl=(EX.lvl+1)%3;exLvlUI();});
+  $('#exSpd').hidden=true;   /* 걷기·달리기 없이 언제나 번개 속도 */
   function tgl(cls,btn,on,off){var a=$('#app');a.classList.toggle(cls);$(btn).textContent=a.classList.contains(cls)?off:on;}
   EX.tglHud=function(){tgl('nohud','#exHudB','📊 에너지창 끄기','📊 에너지창 켜기');};EX.tglCard=function(){tgl('nocard','#exCardB','📖 설명창 끄기','📖 설명창 켜기');};
   $('#exPeers').addEventListener('click',function(){if(MP.room)mpGoNext();else openQR();});
