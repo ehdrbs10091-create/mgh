@@ -1978,7 +1978,7 @@ function exHud(dt){
   $('#exhud').innerHTML=h2;
 }
 function exMenu(){
-  var h='<div class="exmh"><b>탐험 설정 <small style="font-weight:600;color:#888">버전 v85</small></b><button type="button" id="exMClose" aria-label="닫기">✕</button></div>';
+  var h='<div class="exmh"><b>탐험 설정 <small style="font-weight:600;color:#888">버전 v86</small></b><button type="button" id="exMClose" aria-label="닫기">✕</button></div>';
   h+='<div class="exquick mobonly"><button type="button" data-q="exQR">📱 QR로 친구 부르기</button><button type="button" data-q="exHudB">📊 에너지창 켜기/끄기</button><button type="button" data-q="exCardB">📖 설명창 켜기/끄기</button><button type="button" data-q="exExit">🧪 실험실로 나가기</button></div>';
   h+='<label>내 몸무게 <b id="exMv">'+EX.mass+' kg</b><input id="exMass" type="range" min="20" max="100" step="1" value="'+EX.mass+'"></label>';
   h+='<label>기준 높이(위치에너지 0)<select id="exRef"><option value="low">지도에서 가장 낮은 곳 ('+fN(elev(LTOT),0)+' m)</option><option value="ras">라수와가디 마을 ('+fN(elev(vil('ras').s),0)+' m)</option><option value="sea">해수면 (0 m)</option><option value="me">내가 고른 곳</option></select></label>';
@@ -6003,7 +6003,7 @@ function lakeLen(){var L=lakeLevel(),sd=LK.sd,s;for(s=sd;s>sd-40;s-=0.25){if(vis
 function setInfo(){
   var lv=Math.round(LK.lev*100),dp=Math.round(LK.hb*UV*LK.lev*0.985);
   var h='<b>빙하호와 얼음 둑</b><div>수위 <i>'+lv+' %</i></div><div>최대 수심 <i>약 '+fN(dp,0)+' m</i></div><div>호수 길이 <i>약 '+fN(lakeLen(),0)+' m</i></div><div>둑 높이 <i>약 '+fN(LK.hb*UV,0)+' m</i></div>';
-  if(RF.on)h+='<div>떨어지는 덩어리 낙차 <i>약 '+fN(RF.drop,0)+' m</i></div>';
+  if(RF.on)h+='<div>떨어지는 덩어리 낙차 <i>'+fN(S.H,0)+' m</i></div>';
   h+='<small>둑 = 빙하가 밀어 쌓은 얼음·돌 퇴적물. 물을 막고 있는 자연 댐이에요. (모형 값)</small>';
   $('#lakeinfo').innerHTML=h;$('#lakeinfo').hidden=true;   /* 화면을 가려서 표시하지 않아요 */
 }
@@ -6019,7 +6019,7 @@ function updatePre(dt){
     var u=(t-T_FALL)/(T_IMP-T_FALL);
     if(!RF.on){rfSetup();RF.on=true;camG.fol.yaw=camD.fol.yaw;camG.fol.pitch=camD.fol.pitch;camG.fol.dist=camD.fol.dist;}
     RF.head=rfAt(u);
-    showStory('② 꼭대기에서 거대한 얼음·암석 덩어리가 무너져요','낙차 약 '+fN(RF.drop,0)+' m · 호수를 향해 쏟아져 내려와요',t/PRE_T);
+    showStory('② 꼭대기에서 거대한 얼음·암석 덩어리가 무너져요','낙차 '+fN(S.H,0)+' m · 호수를 향해 쏟아져 내려와요',t/PRE_T);
   }else{
     if(!RF.hit){RF.hit=true;RF.ts=0;LK.rip=1;toast('쿵! 덩어리가 호수로 떨어졌어요');}
     RF.ts+=dt;LK.rip=Math.max(0,1-RF.ts/5);LK.sg=0.55*Math.sin(clamp(RF.ts/2.4,0,1)*Math.PI);
