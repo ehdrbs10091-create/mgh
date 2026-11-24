@@ -432,6 +432,23 @@ html,body{overscroll-behavior:none}
 .lkc .lkt{display:block;font-size:15px;margin-bottom:4px}.lkc .lkb{margin:6px 0;font-size:14.5px;line-height:1.65}.lkc .lkrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.lkc .lkrow .lkph{margin:4px 0}.lkc .lktm{font-size:12px;line-height:1.3;background:#fff3c4;border-radius:10px;padding:4px 8px}.lkc .lktm b{font-size:15px}.lkc .lkft{color:#777}.lkc .lkpk{font-family:inherit;font-size:13px}
 #pgcard:has(.lkc) .plnote{display:none}
 #app.mob #pgcard:has(.lkc).open{max-height:min(46vh,calc(100% - 210px))}#app.mob #pgcard:has(.lkc) .lkt{display:none}#app.mob .lkc .lkft{display:none}#app.mob .lkc .lkb{font-size:15px;line-height:1.6;margin:4px 0}#app.mob .lkc .lkrt{font-size:18px;gap:0;justify-content:space-between;flex-wrap:nowrap}#app.mob .lkc .lkrt i{font-size:10px}#app.mob .lkc .dcnav button{font-size:15px;min-height:44px}#app.mob .lkc .lkph{padding:3px 8px}#app.mob .lkc .lkph .lkh{font-size:22px}
+.lkc .dcnav .lkx{flex:0 0 auto;min-width:40px;background:#eee}
+/* 휴대폰: 좋아요 체험 중에는 설명을 화면 아래 작은 판으로 — 위쪽 장면이 잘 보이게 */
+#app.mob.lkride #exctl,#app.mob.lkride #exact,#app.mob.lkride #exff,#app.mob.lkride #exjump,#app.mob.lkride #exjoy,#app.mob.lkride #exmsg,#app.mob.lkride #exDown{display:none!important}
+#app.mob.lkride #pgcard{top:auto!important;bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;left:6px!important;right:6px!important;max-height:34vh!important;overflow:auto!important;padding:6px 10px 8px!important;background:rgba(255,250,240,.94)!important}
+#app.mob.lkride #pgcard>.cardpeek{display:none!important}
+#app.mob.lkride #pgcard>*:not(.cardpeek){display:block!important}
+#app.mob.lkride #pgcard .plnote,#app.mob.lkride #pgcard #pgbody~*{display:none!important}
+#app.mob.lkride .lkc{display:flex;flex-direction:column}
+#app.mob.lkride .lkc .lkt{display:block!important;font-size:14px;margin:0 0 2px;order:1}
+#app.mob.lkride .lkc .lkrt{order:2;font-size:15px;margin:0 0 2px}
+#app.mob.lkride .lkc .lkmv{order:3;font-size:12px}
+#app.mob.lkride .lkc .lkb{order:4;font-size:14.5px;line-height:1.5;margin:2px 0 6px}
+#app.mob.lkride .lkc .lkrow,#app.mob.lkride .lkc .lkpk,#app.mob.lkride .lkc .lkft{display:none!important}
+#app.mob.lkride .lkc .dcnav{order:9;margin:0;gap:6px}
+#app.mob.lkride .lkc .dcnav button{min-height:42px;font-size:15px}
+/* 휴대폰 가로: 오른쪽 옆 판 */
+#app.mobL.lkride #pgcard{top:46px!important;bottom:auto!important;left:auto!important;width:40vw!important;max-height:calc(100% - 56px)!important}
 </style>
 
 <div id="app">
@@ -1961,7 +1978,7 @@ function exHud(dt){
   $('#exhud').innerHTML=h2;
 }
 function exMenu(){
-  var h='<div class="exmh"><b>탐험 설정 <small style="font-weight:600;color:#888">버전 v83</small></b><button type="button" id="exMClose" aria-label="닫기">✕</button></div>';
+  var h='<div class="exmh"><b>탐험 설정 <small style="font-weight:600;color:#888">버전 v85</small></b><button type="button" id="exMClose" aria-label="닫기">✕</button></div>';
   h+='<div class="exquick mobonly"><button type="button" data-q="exQR">📱 QR로 친구 부르기</button><button type="button" data-q="exHudB">📊 에너지창 켜기/끄기</button><button type="button" data-q="exCardB">📖 설명창 켜기/끄기</button><button type="button" data-q="exExit">🧪 실험실로 나가기</button></div>';
   h+='<label>내 몸무게 <b id="exMv">'+EX.mass+' kg</b><input id="exMass" type="range" min="20" max="100" step="1" value="'+EX.mass+'"></label>';
   h+='<label>기준 높이(위치에너지 0)<select id="exRef"><option value="low">지도에서 가장 낮은 곳 ('+fN(elev(LTOT),0)+' m)</option><option value="ras">라수와가디 마을 ('+fN(elev(vil('ras').s),0)+' m)</option><option value="sea">해수면 (0 m)</option><option value="me">내가 고른 곳</option></select></label>';
@@ -3583,7 +3600,7 @@ function p5Stations(){
   P5.cars.forEach(function(c){var M=CARM[c.i];a.push({k:'car'+c.i,n:'🚗 렌터카: 테슬라 '+M.n,s:c.s,o:c.o-0.35,y:exGround(c.s,c.o-0.35),r:0.24});});
   if(typeof PLT!=='undefined'&&PLT.wt)PLT.wt.forEach(function(q,i){var so=q.o+(q.o>0?-1.0:1.0);a.push({k:'wt'+i,n:'🌀 풍력발전기 날개 끝 매달리기',s:q.s,o:so,y:exGround(q.s,so),r:0.6});});
   if(typeof LKV!=='undefined'&&LKV.ready)a.push({k:'like',n:'📱 좋아요 여행 체험관',s:LKV.s,o:LKV.o+(LKV.o>0?-0.6:0.6),y:exGround(LKV.s,LKV.o+(LKV.o>0?-0.6:0.6)),r:0.6});
-  if(typeof DC!=='undefined'&&DC.s)a.push({k:'dc',n:'🖥️ AI 데이터센터 (수력 전기로 운영)',s:DC.s+1.6,o:DC.o,y:exGround(DC.s+1.6,DC.o),r:0.8});
+  if(typeof DCX!=='undefined'&&DCX.s)a.push({k:'dc',n:'🖥️ AI 데이터센터 (수력 전기로 운영)',s:DCX.s+1.6,o:DCX.o,y:exGround(DCX.s+1.6,DCX.o),r:0.8});
   (P5.horses||[]).forEach(function(q){a.push({k:'horse'+q.i,n:'🐴 말 보관소: '+HORSES[q.i].n+' 빌려 타기',s:q.s,o:q.o-0.3,y:exGround(q.s,q.o-0.3),r:0.3});});
   P5.bal.forEach(function(b){a.push({k:'bal'+b.i,n:'🎈 열기구 승강장 '+(b.i+1),s:b.s,o:b.o+0.75,y:exGround(b.s,b.o+0.75),r:0.6});});
   (P5.helis||[]).forEach(function(hp){var so=hp.o+(hp.o>0?-1.2:1.2);a.push({k:hp.i?'heli'+hp.i:'heli',n:'🚁 헬기장 '+(hp.i+1)+' · 공수 강하',s:hp.s,o:so,y:exGround(hp.s,so),r:0.8});});
@@ -4286,14 +4303,14 @@ function p5HorseBuild(L){
 /* ===== AI 데이터센터: 수력발전소에서 만든 전기로 AI 서버를 돌려요 =====
    물의 위치에너지 → 운동에너지 → 발전기(전기에너지) → 송전선 → 데이터센터(계산) → 거의 전부 열 → 냉각
    숫자는 어림값: AI 가속기(GPU) 1개 + 서버 몫 약 1.3 kW, 냉각 등 포함 전력 효율 PUE 약 1.2, AI 질문 1번 약 0.3 Wh(추정치마다 달라요) */
-var DC={};
+var DCX={};
 function dcBuild(L){
   if(typeof PLT==='undefined'||!PLT.built||!PLT.sS)return;
   var side=PLT.side,sS=PLT.sS,o0=-side*2.5;
   function far(s,o){var ok=true;[P5.shop,P5.stable].forEach(function(z){if(z&&Math.hypot(z.s-s,z.o-o)<6)ok=false;});return ok;}
   var q1=p5Site(sS-6,sS+16,14,28,3.2,function(s,o,sl){return sl*2+Math.abs(s-(sS+4))*0.1+(far(s,o)?0:1e6);}),q2=p5Site(sS-6,sS+16,-28,-14,3.2,function(s,o,sl){return sl*2+Math.abs(s-(sS+4))*0.1+(far(s,o)?0:1e6);});
   var q=q1&&q2?(q1.sc<=q2.sc?q1:q2):(q1||q2);if(!q)return;
-  DC.s=q.s;DC.o=q.o;var g=pgGmax(q.s,q.o,1.5);DC.gy=g;
+  DCX.s=q.s;DCX.o=q.o;var g=pgGmax(q.s,q.o,1.5);DCX.gy=g;
   pgLB(L,q.s,q.o,0,0,g-25,25.5,3.2,2.2,[0.6,0.6,0.62]);                                   /* 부지 */
   pgLB(L,q.s,q.o,0,0,g+0.5,22,2.6,1.4,[0.86,0.87,0.9]);                                    /* 서버동(길이 130 m) */
   pgLB(L,q.s,q.o,0,0.71,g+3,15,2.4,0.02,[0.25,0.3,0.38]);pgLB(L,q.s,q.o,0,-0.71,g+3,15,2.4,0.02,[0.25,0.3,0.38]);   /* 검은 유리 띠 */
@@ -4307,10 +4324,10 @@ function dcBuild(L){
   for(i=0;i<tops.length-1;i++)[0,1].forEach(function(j){pbox(L,tops[i][j],tops[i+1][j],0.012,0.012,[0.15,0.15,0.17]);});
 }
 function dcPower(){var C=typeof plCalc==='function'?plCalc():{Pe:0};var Pe=C.Pe,it=Pe/1.2,gpu=it/1300,q=Pe/(0.3*3600);return {Pe:Pe,it:it,gpu:gpu,q:q,cool:Pe-it};}
-function dcDyn(L,tm){if(!DC.s)return;var c=pgW(DC.s,DC.o,DC.gy),dq=Math.hypot(c[0]-camPos[0],c[2]-camPos[2]);if(dq>60)return;
+function dcDyn(L,tm){if(!DCX.s)return;var c=pgW(DCX.s,DCX.o,DCX.gy),dq=Math.hypot(c[0]-camPos[0],c[2]-camPos[2]);if(dq>60)return;
   for(var i=0;i<24;i++){var x=-1.1+(i%12)*0.2,z=i<12?0.725:-0.725,on=Math.sin(tm*(3+i%5)+i*1.7)>0.2;   /* 깜빡이는 서버 불빛 */
-    if(on)pgLB(L,DC.s,DC.o,x,z,DC.gy+6+(i%3)*4,1.2,0.05,0.02,i%4?[0.3,1.6,2.4]:[0.4,2.4,0.8]);}
-  for(i=0;i<16;i++){var fx=-1.05+(i>>1)*0.3,fz=i%2?0.35:-0.35,an=tm*6+i;var p=pgW(DC.s,DC.o,DC.gy+26.1),f=frame(DC.s),ry=Math.atan2(f.tz,f.tx),cs=Math.cos(ry),sn=Math.sin(ry);
+    if(on)pgLB(L,DCX.s,DCX.o,x,z,DCX.gy+6+(i%3)*4,1.2,0.05,0.02,i%4?[0.3,1.6,2.4]:[0.4,2.4,0.8]);}
+  for(i=0;i<16;i++){var fx=-1.05+(i>>1)*0.3,fz=i%2?0.35:-0.35,an=tm*6+i;var p=pgW(DCX.s,DCX.o,DCX.gy+26.1),f=frame(DCX.s),ry=Math.atan2(f.tz,f.tx),cs=Math.cos(ry),sn=Math.sin(ry);
     var cx=p[0]+fx*cs-fz*sn,cz=p[2]+fx*sn+fz*cs;obb(L,[cx,p[1],cz],[Math.cos(an),0,Math.sin(an)],[0,1,0],0.07,0.004,0.012,[0.2,0.2,0.22]);}   /* 도는 냉각 팬 */
 }
 /* 견학 코스 6곳: 카드의 [다음 ▶] [◀ 이전] 버튼(또는 W/S)으로 한 장씩 넘겨요 */
@@ -4344,8 +4361,8 @@ function lkHeart(L,s,o,lx,lz0,y0,cz,cy,th,col){for(var r=0;r<6;r++)for(var c=0;c
 function lkRing(L,w,r,th,col,n){n=n||12;for(var k=0;k<n;k++){var a=k*2*Math.PI/n,a2=(k+0.5)*2*Math.PI/n;obb(L,[w[0]+Math.cos(a2)*r,w[1],w[2]+Math.sin(a2)*r],[-Math.sin(a2),0,Math.cos(a2)],[0,1,0],r*Math.PI/n,th,th,col);}}
 function lkAxes(s,o){var a=pgLW(s,o,0,0,0),b=pgLW(s,o,1,0,0),c=pgLW(s,o,0,1,0);return {x:[b[0]-a[0],0,b[2]-a[2]],z:[c[0]-a[0],0,c[2]-a[2]]};}
 function likeBuild(L){
-  if(typeof DC==='undefined'||!DC.s)return;
-  var q=p5Site(DC.s-13,DC.s-6,DC.o>0?5:-22,DC.o>0?22:-5,2.4,function(s,o,sl){var d=Math.hypot(s-DC.s,o-DC.o),sh=P5.shop?Math.hypot(s-P5.shop.s,o-P5.shop.o):9;return sl*2+Math.abs(d-9)*0.3+(sh<3?1e6:0);});if(!q)return;
+  if(typeof DCX==='undefined'||!DCX.s)return;
+  var q=p5Site(DCX.s-13,DCX.s-6,DCX.o>0?5:-22,DCX.o>0?22:-5,2.4,function(s,o,sl){var d=Math.hypot(s-DCX.s,o-DCX.o),sh=P5.shop?Math.hypot(s-P5.shop.s,o-P5.shop.o):9;return sl*2+Math.abs(d-9)*0.3+(sh<3?1e6:0);});if(!q)return;
   var g=pgGmax(q.s,q.o,0.6);LKV.s=q.s;LKV.o=q.o;LKV.gy=g;
   var sg=LKV.o>0?-1:1;LKV.so=LKV.o+sg*0.6;   /* 체험관 입구(정류장) 쪽 */
   /* ── ① 거대한 휴대폰(높이 약 46 m, 실제의 약 300배) ── */
@@ -4394,7 +4411,7 @@ function likeBuild(L){
   add(q.s+0.75,q.o-0.3,g+LKV.hy+9,'phone');   /* 화면 오른쪽 앞: ♥ 버튼이 가려지지 않게 */add(q.s+0.55,(q.o+B.o)/2,g+20);
   add(B.s+C.ap[0],B.o+C.ap[1],by+11,'ap');add(B.s+C.modem[0],B.o+C.modem[1],by+10,'modem');add(B.s+C.ant[0],B.o+C.ant[1],by+16,'ant');
   /* ── ② 기지국 탑(높이 약 40 m 모형) ── */
-  var dirS=DC.s-q.s,dirO=DC.o-q.o,dl=Math.hypot(dirS,dirO);dirS/=dl;dirO/=dl;var px=-dirO,po=dirS;
+  var dirS=DCX.s-q.s,dirO=DCX.o-q.o,dl=Math.hypot(dirS,dirO);dirS/=dl;dirO/=dl;var px=-dirO,po=dirS;
   var T={s:q.s+dirS*2.0+px*1.2,o:q.o+dirO*2.0+po*1.2};T.g=exGround(T.s,T.o);LKV.T=T;var HT=130;LKV.HT=HT;
   [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(c){pbox(L,pgW(T.s+c[0]*0.12,T.o+c[1]*0.12,T.g),pgW(T.s+c[0]*0.03,T.o+c[1]*0.03,T.g+HT),0.012,0.012,[0.75,0.75,0.78]);});
   for(var i=1;i<8;i++){var yy=T.g+i*HT/8,w=0.12-0.09*i/8;pbox(L,pgW(T.s-w,T.o-w,yy),pgW(T.s+w,T.o+w,yy),0.008,0.008,[0.75,0.75,0.78]);pbox(L,pgW(T.s+w,T.o-w,yy),pgW(T.s-w,T.o+w,yy),0.008,0.008,[0.75,0.75,0.78]);}
@@ -4416,12 +4433,12 @@ function likeBuild(L){
   pgLB(L,Rr.s,Rr.o,0,0,Rr.g-2,0.6,0.5,0.5,lkS([0.6,0.6,0.62]));
   run([Xo.s,Xo.o],[Rr.s,Rr.o],6,32);add(Rr.s,Rr.o,Rr.g+22,'router');
   /* ── ⑤ 데이터센터 문: 엣지 서버·로드밸런서 ── */
-  var Gt={s:DC.s-2.1,o:DC.o};   /* 휴대폰 쪽에서 오는 길목(건물 앞) */Gt.g=exGround(Gt.s,Gt.o);LKV.G=Gt;
+  var Gt={s:DCX.s-2.1,o:DCX.o};   /* 휴대폰 쪽에서 오는 길목(건물 앞) */Gt.g=exGround(Gt.s,Gt.o);LKV.G=Gt;
   [-0.35,0.35].forEach(function(z){pgLB(L,Gt.s,Gt.o,0,z,Gt.g,40,0.12,0.08,lkS([0.88,0.9,0.95]));for(var k=0;k<6;k++)[0.061,-0.061].forEach(function(x){pgLB(L,Gt.s,Gt.o,x,z,Gt.g+5+k*5.5,0.6,0.003,0.05,[0.3,1.6,2.4]);});});
   pgLB(L,Gt.s,Gt.o,0,0,Gt.g+38,6,0.14,0.8,lkS([0.88,0.9,0.95]));[0.071,-0.071].forEach(function(x){pgLB(L,Gt.s,Gt.o,x,0,Gt.g+39,4,0.003,0.5,[0.4,1.3,2.4]);});
   run([Rr.s,Rr.o],[Gt.s-0.9,Gt.o],5,36);add(Gt.s-0.45,Gt.o,Gt.g+24);add(Gt.s,Gt.o,Gt.g+20,'gate');   /* 문 정면으로 곧게 들어가요 */
   /* ── ⑥ 서버실(지붕을 뗀 홀) ── */
-  var H={s:DC.s,o:DC.o+(DC.o>q.o?-1.55:1.55)};H.g=pgGmax(H.s,H.o,0.9);LKV.H=H;
+  var H={s:DCX.s,o:DCX.o+(DCX.o>q.o?-1.55:1.55)};H.g=pgGmax(H.s,H.o,0.9);LKV.H=H;
   pgLB(L,H.s,H.o,0,0,H.g-15,15.3,2.4,1.0,lkS([0.62,0.64,0.68]));
   for(k=0;k<6;k++)pgLB(L,H.s,H.o,-1.0+k*0.4,0,H.g+0.3,0.05,0.004,0.96,lkS([0.45,0.47,0.5]));   /* 바닥 타일 줄 */
   [[0,0.5],[0,-0.5]].forEach(function(w){pgLB(L,H.s,H.o,w[0],w[1],H.g,3,2.4,0.04,lkS([0.82,0.84,0.88]));});[-1.2,1.2].forEach(function(x){pgLB(L,H.s,H.o,x,0,H.g,3,0.04,1.0,lkS([0.82,0.84,0.88]));});
@@ -4468,7 +4485,7 @@ function likeGo(d){var R=EX.ride;if(!R||R.k!=='like'||R.mv)return;var n=clamp(R.
   else{R.st=n;var p=LKV.P[likeCp(LKS[n].at)];R.pk={s:p.s,o:p.o,y:p.y};}
   R.stT=0;EX.hudT=0;}
 function likeRestart(){var R=EX.ride;if(!R||R.k!=='like')return;R.st=0;R.mv=null;R.stT=0;var p=LKV.P[LKV.cp.phone];R.pk={s:p.s,o:p.o,y:p.y};EX.hudT=0;}
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-lk]');if(!b)return;e.preventDefault();e.stopPropagation();var a=b.getAttribute('data-lk');if(a==='r')likeRestart();else likeGo(+a);},true);
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-lk]');if(!b)return;e.preventDefault();e.stopPropagation();var a=b.getAttribute('data-lk');if(a==='r')likeRestart();else if(a==='x'){if(EX.ride&&EX.ride.k==='like')pgEnd(false);}else likeGo(+a);},true);
 function likeStep(R,dt,fw){
   var nx=(fw>0.5&&!R.fwH)?1:((fw<-0.5&&!R.fwH)?-1:0);R.fwH=Math.abs(fw)>0.5;if(nx)likeGo(nx);
   R.stT=(R.stT||0)+dt;var prev=R.pk;
@@ -4479,7 +4496,7 @@ function likeStep(R,dt,fw){
   EX.s=p.s;EX.off=p.o;EX.y=p.y+0.1*UV;EX.air=true;EX.vy=0;EX.vh=[0,0];EX.hdg=R.hd||0;
   if(!EX.lookDrag&&(R.mv||atPh)){var dh=(R.hd||0)-EX.yaw;while(dh>Math.PI)dh-=2*Math.PI;while(dh<-Math.PI)dh+=2*Math.PI;EX.yaw+=dh*Math.min(1,dt*2);}
 }
-var LKROUTE=[['📱','phone','화면'],['🧠','ap','AP'],['📶','ant','안테나'],['📡','tower','기지국'],['🏢','office','교환국'],['🌐','router','라우터'],['🚪','gate','DC 문'],['🖥️','app','앱 서버'],['💾','db','DB']];
+var LKROUTE=[['📱','phone','화면'],['🧠','ap','AP'],['📶','ant','안테나'],['📡','tower','기지국'],['🏢','office','교환국'],['🌐','router','라우터'],['🚪','gate','DCX 문'],['🖥️','app','앱 서버'],['💾','db','DB']];
 function likeText(R){
   if(!R)return '<div class="lkc"><b>📱 좋아요 체험관</b>휴대폰에서 ♥를 누르면 어디까지 갔다 올까요? <b>♥ 캡슐</b>을 타고 휴대폰 → 기지국 → 인터넷 → <b>AI 데이터센터</b> → 다시 휴대폰까지 날아가 봐요!<br><small>E로 시작!</small></div>';
   var i=R.st,S=LKS[i],tot=0;for(var k=0;k<=i;k++)tot+=LKS[k].ms;
@@ -4492,7 +4509,7 @@ function likeText(R){
   if(i>=7&&i<=10)pk='<div class="lkpk">📨 쪽지 내용: "나 → 게시물 48213번에 ♥"</div>';
   if(i>=11&&i<=12)pk='<div class="lkpk lkok">✅ 답장: "저장 완료! 좋아요 1,025개"</div>';
   var mv=R.mv?'<div class="lkmv">🚀 '+LKROUTE[Math.max(0,ci)][2]+'(으)로 가는 중… '+Math.round(R.mv.u*100)+'%</div>':'';
-  var nav='<div class="dcnav"><button type="button" data-lk="-1"'+(i===0||R.mv?' disabled':'')+'>◀ 이전</button><span>'+(i+1)+'/'+LKS.length+'</span>'+(i===LKS.length-1?'<button type="button" data-lk="r">↺ 처음부터</button>':'<button type="button" data-lk="1"'+(R.mv?' disabled':'')+'>'+(i===0?'♥ 누르기':(LKS[i+1].seg?'🚀 출발':'다음 ▶'))+'</button>')+'</div>';
+  var nav='<div class="dcnav"><button type="button" data-lk="-1"'+(i===0||R.mv?' disabled':'')+'>◀ 이전</button><span>'+(i+1)+'/'+LKS.length+'</span>'+(i===LKS.length-1?'<button type="button" data-lk="r">↺ 처음부터</button>':'<button type="button" data-lk="1"'+(R.mv?' disabled':'')+'>'+(i===0?'♥ 누르기':(LKS[i+1].seg?'🚀 출발':'다음 ▶'))+'</button>')+'<button type="button" class="lkx" data-lk="x" title="체험 끝">✕</button></div>';
   return '<div class="lkc"><b class="lkt">📱 '+(i+1)+'. '+S.t+'</b>'+nav+bar+mv+'<div class="lkrow">'+phone+'<span class="lktm">⏱ 실제로는<br><b>'+(tot/1000).toFixed(3)+'초</b></span></div><p class="lkb">'+S.b+'</p>'+pk+'<span class="plcoin" style="display:none">'+(i+1)+'/'+LKS.length+' 단계 · 아래 버튼으로 넘겨요</span><small class="lkft">W/S로도 넘겨요 · E 끝 · 모형은 실제보다 아주 크게 만들었어요</small></div>';
 }
 function likeLabels(){
@@ -4526,7 +4543,7 @@ function likeDyn(L,tm){
   if(st===2||to===2)pgLB(L,B.s,B.o,C.ap[0],C.ap[1],by+4.1,0.4,0.15,0.15,[0.6+Math.abs(Math.sin(tm*6)),1.6,2.6]);
   if(to===3||st===3){pgLB(L,B.s,B.o,C.modem[0],C.modem[1],by+3.7,0.4,0.11,0.1,[2.6,2.0,0.4]);}
   if(to===3||to===4||st===3)for(k=0;k<4;k++){var rr2=((tm*0.8+k/4)%1)*0.25;lkRing(L,pgW(B.s+C.ant[0],B.o+C.ant[1],by+7),0.02+rr2,0.003,[0.5,1.4,2.6],12);}
-  /* 기지국 꼭대기 빨간 항공 장애등 · 라우터 불빛 · DC 문 레이저 */
+  /* 기지국 꼭대기 빨간 항공 장애등 · 라우터 불빛 · DCX 문 레이저 */
   var T=LKV.T;if(Math.sin(tm*3)>0)obb(L,pgW(T.s,T.o,T.g+LKV.HT+1),[1,0,0],[0,1,0],0.012,0.012,0.012,[2.8,0.2,0.2]);
   var Rr=LKV.R;for(k=0;k<9;k++){var z=[-0.14,0,0.14][k%3],yk=Rr.g+1+Math.floor(k/3)*3.5;pgLB(L,Rr.s,Rr.o,0.081,z,yk,0.7,0.003,0.08,Math.sin(tm*7+k*1.7)>0?[0.4,2.4,0.6]:[0.1,0.3,0.1]);}
   var Gt=LKV.G;if(to===7||(st===7&&stT<1.5)){var lz=Math.sin(tm*5)*0.3;pgLB(L,Gt.s,Gt.o,0,lz,Gt.g+1,36,0.004,0.01,[0.4,2.0,2.8]);pgLB(L,Gt.s,Gt.o,0,0,Gt.g+((tm*20)%36)+1,0.4,0.004,0.62,[0.4,2.0,2.8]);}
@@ -5032,8 +5049,8 @@ var SPC={alt:2.1e6,GM:3.986e14,Re:6.371e6,m:50};
 SPC.r=SPC.Re+SPC.alt;SPC.v=Math.sqrt(SPC.GM/SPC.r);SPC.T=2*Math.PI*SPC.r/SPC.v;SPC.g=SPC.GM/(SPC.r*SPC.r);
 var SP={on:false,mode:'dock',p:[0,0,0.4],v:[0,0,0],yaw:Math.PI,mesh:null,lab:false,sel:0,t:0,ts:1,hudT:0,thr:0,sas:true,docked:false,cap:null,ce:null,ct:null,tries:0};
 /* 궤도 운석 5개: 근지점·원지점 높이(km), 질량(kg) */
-var SPR=[{n:'운석 A (원 궤도)',pe:2100,ap:2100,m:400,c:'#ffd166'},{n:'운석 B',pe:800,ap:6000,m:1200,c:'#ef476f'},{n:'운석 C',pe:1500,ap:15000,m:300,c:'#06d6a0'},{n:'운석 D',pe:2500,ap:3500,m:5000,c:'#4cc9f0'},{n:'운석 E (길쭉한 궤도)',pe:600,ap:25000,m:150,c:'#c77dff'}];
-SPR.forEach(function(r,i){r.rp=SPC.Re+r.pe*1000;r.ra=SPC.Re+r.ap*1000;r.a=(r.rp+r.ra)/2;r.e=(r.ra-r.rp)/(r.ra+r.rp);r.mm=Math.sqrt(SPC.GM/Math.pow(r.a,3));r.w=i*1.25;r.M0=i*0.9;});
+var SPRK=[{n:'운석 A (원 궤도)',pe:2100,ap:2100,m:400,c:'#ffd166'},{n:'운석 B',pe:800,ap:6000,m:1200,c:'#ef476f'},{n:'운석 C',pe:1500,ap:15000,m:300,c:'#06d6a0'},{n:'운석 D',pe:2500,ap:3500,m:5000,c:'#4cc9f0'},{n:'운석 E (길쭉한 궤도)',pe:600,ap:25000,m:150,c:'#c77dff'}];
+SPRK.forEach(function(r,i){r.rp=SPC.Re+r.pe*1000;r.ra=SPC.Re+r.ap*1000;r.a=(r.rp+r.ra)/2;r.e=(r.ra-r.rp)/(r.ra+r.rp);r.mm=Math.sqrt(SPC.GM/Math.pow(r.a,3));r.w=i*1.25;r.M0=i*0.9;});
 
 function spCyl(L,c,ax,len,D,col){   /* 축 방향 원통(상자 3개를 돌려 겹친 모양) */
   var a=ax==='x'?[1,0,0]:(ax==='y'?[0,1,0]:[0,0,1]);
@@ -5256,7 +5273,7 @@ document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('.spbtn button');if(!b||!SP.on)return;
   var a=b.getAttribute('data-a');
   if(a==='lab'){SP.lab=!SP.lab;if(!SP.lab)rkOvHide();}
-  else if(a==='next')SP.sel=(SP.sel+1)%SPR.length;
+  else if(a==='next')SP.sel=(SP.sel+1)%SPRK.length;
   else if(a==='ts')SP.ts=SP.ts>=10?1:(SP.ts===1?3:10);
   else if(a==='stop'){SP.brake=true;}
   else if(a==='sas')SP.sas=!SP.sas;
@@ -5290,14 +5307,14 @@ function spLab(){
   /* 정거장 궤도 */
   g.strokeStyle='rgba(255,255,255,0.35)';g.setLineDash([4,4]);g.beginPath();g.arc(cx,cy,SPC.r*sc,0,7);g.stroke();g.setLineDash([]);
   var sa=SP.t*SPC.v/SPC.r;g.fillStyle='#fff';g.fillRect(cx+Math.cos(sa)*SPC.r*sc-4,cy-Math.sin(sa)*SPC.r*sc-2,8,4);g.font='600 11px system-ui,sans-serif';g.fillText('🛰 정거장',cx+Math.cos(sa)*SPC.r*sc+6,cy-Math.sin(sa)*SPC.r*sc);
-  SPR.forEach(function(r,i){
+  SPRK.forEach(function(r,i){
     g.strokeStyle=r.c+(i===SP.sel?'':'88');g.lineWidth=i===SP.sel?2:1;g.beginPath();
     for(var k=0;k<=96;k++){var E=k/96*2*Math.PI,x=r.a*(Math.cos(E)-r.e),y=r.a*Math.sqrt(1-r.e*r.e)*Math.sin(E),c=Math.cos(r.w),s=Math.sin(r.w),X=x*c-y*s,Y=x*s+y*c;if(k)g.lineTo(cx+X*sc,cy-Y*sc);else g.moveTo(cx+X*sc,cy-Y*sc);}
     g.stroke();var q=spRockPos(r,SP.t);g.fillStyle=r.c;g.beginPath();g.arc(cx+q.x*sc,cy-q.y*sc,i===SP.sel?6:4,0,7);g.fill();
   });
   g.lineWidth=1;
   /* 고른 운석의 에너지 막대 */
-  var r=SPR[SP.sel],q=spRockPos(r,SP.t),ke=0.5*r.m*q.v*q.v,pe=-SPC.GM*r.m/q.r,E0=ke+pe,keMax=0.5*r.m*SPC.GM*(2/r.rp-1/r.a);
+  var r=SPRK[SP.sel],q=spRockPos(r,SP.t),ke=0.5*r.m*q.v*q.v,pe=-SPC.GM*r.m/q.r,E0=ke+pe,keMax=0.5*r.m*SPC.GM*(2/r.rp-1/r.a);
   var bx=big?W*0.6:16,by=big?280:H*0.56,bw=big?Math.min(W*0.36,380):W-32;
   g.fillStyle='#fff';g.font='800 15px system-ui,sans-serif';g.fillText(r.n+' · 질량 '+fN(r.m,0)+' kg',bx,by);
   g.font='600 12.5px system-ui,sans-serif';
@@ -6491,7 +6508,7 @@ function mobCards(){
       pk.addEventListener('pointerup',function(){if(y0!=null&&!moved)mobCardSet(el,!el.classList.contains('open'));y0=null;});
       pk.addEventListener('pointercancel',function(){y0=null;});}
     if(el.hidden||!MOB.on)return;
-    var rk=EX.ride?EX.ride.k:'';if(el.dataset.rk!==rk){el.dataset.rk=rk;if(rk)mobCardSet(el,rk==='dc'||rk==='like');}   /* 놀이기구를 타기 시작하면 설명은 접어서 앞이 잘 보이게 */
+    var rk=EX.ride?EX.ride.k:'';var ap=$('#app');if(ap)ap.classList.toggle('lkride',rk==='like');if(el.dataset.rk!==rk){el.dataset.rk=rk;if(rk)mobCardSet(el,rk==='dc'||rk==='like');}   /* 놀이기구를 타기 시작하면 설명은 접어서 앞이 잘 보이게 */
     var p=mobPeekText(el);if(!p)return;
     if(el.dataset.pt!==p.t){if(el.dataset.pt&&!(EX.ride&&(EX.ride.k==='dc'||EX.ride.k==='like')))mobCardSet(el,false);el.dataset.pt=p.t;}   /* 다른 설명으로 바뀌면 다시 접어요 */
     pk.querySelector('b').textContent=p.t;pk.querySelector('span').textContent=p.n;
