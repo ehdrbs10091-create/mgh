@@ -1723,7 +1723,7 @@ function exCharUI(show){
 var EX={on:false,s:0,off:0,y:0,vy:0,vh:[0,0],air:false,yaw:Math.PI,pitch:0.32,dist:2.4,fp:false,mass:50,ref:'low',refC:3000,drag:false,lvl:2,
   keys:{},jx:0,jy:0,holdT:0,jumpEdge:false,apex:0,lost:0,land:null,landT:0,flags:[],got:{},hdg:Math.PI,anim:0,spd:0,jet:false,hudT:0,prevMode:'fol',inited:false,msgT:0};
 var EXG=9.81,EXVT=55,EX_TOP=7234,EXSMIN=21,EXSPD=[20,60,180],EXJUMP=20;
-var exM=null,EXV=4200*36;
+var exM=null,EXV=4200*48;
 function exInitGL(){exM={p:mkBuf(new Float32Array(EXV*3),gl.DYNAMIC_DRAW),n:mkBuf(new Float32Array(EXV*3),gl.DYNAMIC_DRAW),c:mkBuf(new Float32Array(EXV*3),gl.DYNAMIC_DRAW),count:0};}
 
 function exGround(s,o){return visH(s,o)*UV;}
@@ -1930,9 +1930,9 @@ function exBuild(L,tm){
     AVPTS.push([p,(E.avs||1)*0.68]);
     if(typeof evoFxDraw==='function'&&EVO.fx>0){EVO.fx-=0.016;evoFxDraw(L,p,tm);}
   }
+  mpDraw(L,tm);   /* 친구들은 먼저 그려요: 놀이공원이 많아 그릴 칸이 모자라도 친구 모습은 꼭 보이게 */
   if(typeof PLT!=='undefined'&&PLT.built)plDyn(L,tm);
   if(PG.built)pgDyn(L,tm);
-  mpDraw(L,tm);
   EX.flags.forEach(function(f,i){
     var q=wpos(f.s,f.off,f.y/UV);
     addBox(L,q[0],q[1],q[2],0.03,1.25,0.03,0,[0.95,0.95,0.97]);
@@ -1979,7 +1979,7 @@ function exHud(dt){
   $('#exhud').innerHTML=h2;
 }
 function exMenu(){
-  var h='<div class="exmh"><b>탐험 설정 <small style="font-weight:600;color:#888">버전 v87</small></b><button type="button" id="exMClose" aria-label="닫기">✕</button></div>';
+  var h='<div class="exmh"><b>탐험 설정 <small style="font-weight:600;color:#888">버전 v88</small></b><button type="button" id="exMClose" aria-label="닫기">✕</button></div>';
   h+='<div class="exquick mobonly"><button type="button" data-q="exQR">📱 QR로 친구 부르기</button><button type="button" data-q="exHudB">📊 에너지창 켜기/끄기</button><button type="button" data-q="exCardB">📖 설명창 켜기/끄기</button><button type="button" data-q="exExit">🧪 실험실로 나가기</button></div>';
   h+='<label>내 몸무게 <b id="exMv">'+EX.mass+' kg</b><input id="exMass" type="range" min="20" max="100" step="1" value="'+EX.mass+'"></label>';
   h+='<label>기준 높이(위치에너지 0)<select id="exRef"><option value="low">지도에서 가장 낮은 곳 ('+fN(elev(LTOT),0)+' m)</option><option value="ras">라수와가디 마을 ('+fN(elev(vil('ras').s),0)+' m)</option><option value="sea">해수면 (0 m)</option><option value="me">내가 고른 곳</option></select></label>';
@@ -4176,7 +4176,7 @@ function p5Dyn(L,tm){
   if(!P5.built)return;P5.tm=tm;
   if(P5.lostBal){var lb=P5.lostBal;lb.t+=0.016;lb.y+=1.2*0.016*8;lb.s+=lb.vs*0.016/UM;lb.o=clamp(lb.o+lb.vo*0.016/UM,-41,41);p5BalDraw(L,lb.s,lb.o,lb.y,tm,false,0,0);if(lb.t>40)P5.lostBal=null;}   /* 사람이 빠져 가벼워진 열기구는 떠올라요 */if(typeof dcDyn==='function')dcDyn(L,tm);if(typeof likeDyn==='function')likeDyn(L,tm);var E=EX,R=E.ride,rk=R?R.k:'';
   if(R&&/^wt/.test(rk)&&R.tip){var tp=R.tip,ww=wpos(tp.s,tp.o,tp.y/UV);pbox(L,ww,[ww[0],ww[1]-0.12,ww[2]],0.01,0.01,[0.9,0.75,0.2]);}
-  (P5.horses||[]).forEach(function(q){if(rk==='horse'+q.i)return;p5HorseDraw(L,q.s,q.o,meshH(q.s,q.o)*UV,q.h,q.i,0,0,0);});
+  (P5.horses||[]).forEach(function(q){if(rk==='horse'+q.i)return;var wq=wpos(q.s,q.o,0);if(Math.hypot(wq[0]-camPos[0],wq[2]-camPos[2])>10)return;p5HorseDraw(L,q.s,q.o,meshH(q.s,q.o)*UV,q.h,q.i,0,0,0);});
   if(R&&/^horse/.test(rk))p5HorseDraw(L,R.s,R.o,R.y+R.jz,R.h,R.ci,R.ph,R.v,R.pit);
   P5.cars.forEach(function(c){if(rk==='car'+c.i)return;var wq=wpos(c.s,c.o,0);if(Math.hypot(wq[0]-camPos[0],wq[2]-camPos[2])>40)return;if(!c.H)c.H=p5CarH(c.s,c.o,c.h,CARM[c.i]);p5CarDraw(L,c.s,c.o,c.h,CARM[c.i],0,c.H);});
   (P5.helis||[]).forEach(function(hp){if(R&&/^heli/.test(rk)&&R.pad===hp)return;var wq=wpos(hp.s,hp.o,0);if(Math.hypot(wq[0]-camPos[0],wq[2]-camPos[2])>60)return;p5HeliDraw(L,hp.s,hp.o,hp.gy+2.6,0.6,tm,0,0,0);});
@@ -5854,12 +5854,12 @@ function mpDraw(L,tm){
   }
   arr.sort(function(a,b){return a.d-b.d;});MP.near=arr;
   var i,drawn=0;
-  for(i=0;i<arr.length&&drawn<44;i++){
+  for(i=0;i<arr.length&&drawn<40;i++){
     var m2=arr[i];if(m2.r&&typeof p5DrawPeer==='function'&&!m2.z)p5DrawPeer(L,m2,tm);if(m2.hide)continue;drawn++;
     var p=wpos(m2.cs,m2.co,m2.cy/UV),p0=wpos(m2.cs,m2.co,0),p1=wpos(m2.cs+Math.cos(m2.ch)*0.1,m2.co+Math.sin(m2.ch)*0.1,0),ry=Math.atan2(p1[2]-p0[2],p1[0]-p0[0]),c=typeof evoCh==='function'?evoCh(CH[m2.c],m2.v):CH[m2.c];
     var B=pgMkB(L,p,ry,0,m2.av,0);if(i<8)AVPTS.push([p,m2.av*0.68]);
-    if(i<8)exAvatar(B,c,Math.sin(m2.an)*0.06*m2.mv,false,tm,m2.pose);
-    else{var F=[c.fur[0]+4,c.fur[1],c.fur[2]];B(0,0,0,0.18,0.3,0.2,F);B(0,0.27,0,0.34,0.32,0.38,F);}
+    if(i<6&&m2.d<3)exAvatar(B,c,Math.sin(m2.an)*0.06*m2.mv,false,tm,m2.pose);   /* 가까운 친구: 자세한 모습 */
+    else exAvatarLite(B,c);   /* 먼 친구·많은 친구: 가벼운 모습(그래도 같은 캐릭터로 보여요) */
   }
 }
 function mpLabels(){
@@ -6422,7 +6422,7 @@ mpInit();
 lakeReset();
 setupLabels();syncCamBtns();renderPanel();
 (function(){var T=camTarget({on:false,has:false,s:0});camS.tx=T.x;camS.ty=T.y;camS.tz=T.z;camS.dist=camG.fol.dist;camS.yaw=camG.fol.yaw;camS.pitch=camG.fol.pitch;camS.phi=pathHeading(T.s);})();
-if(DBG)window.__dbg={exEnter:exEnter,LKV:LKV,LKS:LKS,likeGo:likeGo,likeText:likeText,EVO:EVO,evoStage:evoStage,p5Eagles:p5Eagles,newL:newL,exBuild:exBuild,p5Dyn:p5Dyn,exAvatar:exAvatar,pgMkB:pgMkB,updateLabels:updateLabels,p5CarH:p5CarH,P5:P5,meshH:meshH,CARM:CARM,PG:PG,pgStart:pgStart,pgEnd:pgEnd,pgSim:pgSim,pgBuild:pgBuild,CH:CH,visH:visH,UM:UM,UV:UV,vil:vil,exGround:exGround,NR:NR,R0:R0,exPlace:exPlace,PLT:PLT,plCalc:plCalc,exStep:exStep,EX:EX,MP:MP,RL:RL,f9Sim:f9Sim,F9:F9,pgSeg:pgSeg,pgLoopV:pgLoopV,pgLoopVs:pgLoopVs,pgCoT:pgCoT,pgText:pgText,pgFF:pgFF,SP:SP,spEnter:spEnter,spExit:spExit,spAct:spAct,SPX:SPX,syStart:syStart,syCustom:syCustom,mpSync:mpSync,mpGoNext:mpGoNext,SYV:SYV,drawSoyuz:drawSoyuz,spFF:spFF,syStep1:syStep1,SYP:SYP,syH:syH,pgPos:pgPos,pgCoDist:pgCoDist,pgAct:pgAct,RF:RF,pre:pre,LK:LK,updatePre:updatePre,S:S,cur:cur,pl:pl,doReset:doReset,startRun:startRun,camG:camG,frags:[],stateAt:stateAt,ui:ui,VIL:VIL};
+if(DBG)window.__dbg={exEnter:exEnter,p5HorseDraw:p5HorseDraw,dcDyn:dcDyn,likeDyn:likeDyn,p5CarDraw:p5CarDraw,p5HeliDraw:p5HeliDraw,meshH:meshH,mpSync:mpSync,mpDraw:mpDraw,LKV:LKV,LKS:LKS,likeGo:likeGo,likeText:likeText,EVO:EVO,evoStage:evoStage,p5Eagles:p5Eagles,newL:newL,exBuild:exBuild,p5Dyn:p5Dyn,exAvatar:exAvatar,pgMkB:pgMkB,updateLabels:updateLabels,p5CarH:p5CarH,P5:P5,meshH:meshH,CARM:CARM,PG:PG,pgStart:pgStart,pgEnd:pgEnd,pgSim:pgSim,pgBuild:pgBuild,CH:CH,visH:visH,UM:UM,UV:UV,vil:vil,exGround:exGround,NR:NR,R0:R0,exPlace:exPlace,PLT:PLT,plCalc:plCalc,exStep:exStep,EX:EX,MP:MP,RL:RL,f9Sim:f9Sim,F9:F9,pgSeg:pgSeg,pgLoopV:pgLoopV,pgLoopVs:pgLoopVs,pgCoT:pgCoT,pgText:pgText,pgFF:pgFF,SP:SP,spEnter:spEnter,spExit:spExit,spAct:spAct,SPX:SPX,syStart:syStart,syCustom:syCustom,mpSync:mpSync,mpGoNext:mpGoNext,SYV:SYV,drawSoyuz:drawSoyuz,spFF:spFF,syStep1:syStep1,SYP:SYP,syH:syH,pgPos:pgPos,pgCoDist:pgCoDist,pgAct:pgAct,RF:RF,pre:pre,LK:LK,updatePre:updatePre,S:S,cur:cur,pl:pl,doReset:doReset,startRun:startRun,camG:camG,frags:[],stateAt:stateAt,ui:ui,VIL:VIL};
 requestAnimationFrame(loop);
 if(DBG)window.__dbg.prof=function(){var o=[],tm=1;[['sy',function(L){syDyn(L,tm);}],['tw',function(L){if(typeof twDyn==='function')twDyn(L,tm);}],['p5',function(L){p5Dyn(L,tm);}],['pl',function(L){if(PLT.built)plDyn(L,tm);}],['mp',function(L){mpDraw(L,tm);}],
  ['train',function(L){PG.COS.forEach(function(T){pgTrain(L,tm,T);});}],['bungee',function(L){if(typeof pgBungeeDyn==='function')pgBungeeDyn(L,tm);}],['para',function(L){pgParaDyn(L,tm);}],['gv',function(L){pgGVDyn(L,tm);}],['therm',function(L){pgThermDyn(L,tm);}],['rocket',function(L){if(typeof pgRocketDyn==='function')pgRocketDyn(L,tm);}],['all',function(L){exBuild(L,tm);}]].forEach(function(q){
